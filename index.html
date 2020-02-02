@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<!-- bu yazılım Dr. Zafer Akçalı tarafından oluşturulmuştur -->
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Web of Science'da Ayrıntılı Arama</title>
+<style>
+* {box-sizing: border-box}
+
+/* Style the tab */
+.tab {
+  float: left;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  width: 10%;
+  height: 960px;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  display: block;
+  background-color: inherit;
+  color: black;
+  padding: 22px 16px;
+  width: 100%;
+  border: none;
+  outline: none;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current "tab button" class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  float: left;
+  padding: 0px 12px;
+  border: 1px solid #ccc;
+  width: 90%;
+  border-left: none;
+  height: 960px;
+}
+
+
+/* Create two equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 30%;
+  padding: 10px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+</style>
+</head>
+<body>
+<div class="tab">
+  <button class="tablinks active" onclick="openSection(event, 'Makale')"id="defaultOpen">Makale ve atıf ara</button>
+  <button class="tablinks" onclick="openSection(event, 'Yazar')">Yazar ara</button>
+  <button class="tablinks" onclick="openSection(event, 'BelgeBilgi')">Belge-bilgi indir</button>
+</div>
+<div id="Makale" class="tabcontent">
+	Web of Science'da AdvancedSearch arama kutusuna yazılacak metni giriniz, "WOS arama sayfası" na tıklayınız <br />
+	<textarea rows = "20" cols = "100" name = "Uzun Yazı" id="searchText"></textarea>
+ 
+<p id="displaySID">SID alınmadı, GeneralSearch sayfasına gider</p>
+	Aşağıdaki tuşa tıkladığınızda arama metni, clipboarda kopyalanmış olacaktır  <br />
+	Açılan WOS sayfasındaki kutuya doğrudan yapıştırabilirsiniz <br />
+<button onclick="openWOSw()">WOS arama sayfası</button> <a href="paste.png"> İlk gidişte gelen sayfanın adresini aşağıdaki kutuya kopyalayınız (göster)</a> <br />
+
+	Web of Science arama sayfasında adres çubuğunda yazan adres (SID= ifadesi içermelidir): <br /> 
+	<textarea oninput="urlChanged()" rows = "2" cols = "100" name = "ileri arama" id="advURL"></textarea> <br /> 
+
+    Hazır arama metinleri. Seçerseniz sayfa başındaki kutuya aktarılacaktır. <br />  
+<select id="selectQuery" onchange="copyFunction(this.options[this.selectedIndex].value)">
+	<option value="">Anabilim / Bilim Dalı / Şehir Seçiniz</option>
+	<option value="0">Başkent Üniversitesi</option>
+	<option value="1">Başkent Üniversitesi Tıp Fakültesi</option>
+	<option value="2">Anesteziyoloji ve Reanimasyon</option>
+	<option value="3">Algoloji</option>
+	<option value="4">Yoğun Bakım</option>
+	<option value="5">Beyin ve Sinir Cerrahisi</option>
+	<option value="6">Çocuk Cerrahisi</option>
+	<option value="7">Genel Cerrahi</option>
+	<option value="8">Transplantasyon</option>
+	<option value="9">Yanık</option>
+	<option value="10">Göğüs Cerrahisi</option>
+	<option value="11">Göz Hastalıkları</option>
+	<option value="12">Kadın Hastalıkları ve Doğum</option>
+	<option value="13">Jinekolojik Onkoloji</option>
+	<option value="14">Perinatoloji</option>
+	<option value="15">Üreme Endokrinolojisi ve İnfertilite</option>
+	<option value="16">Kalp ve Damar Cerrahisi</option>
+	<option value="17">Çocuk Kalp ve Damar Cerrahisi</option>
+	<option value="18">Kulak-Burun-Boğaz Hastalıkları</option>
+	<option value="19">Ortopedi ve Travmatoloji</option>
+	<option value="20">Plastik ve Rekonstrüktif Cerrahi</option>
+	<option value="21">Tıbbi Patoloji</option>
+	<option value="22">Üroloji</option>
+	<option value="23">Acil Tıp</option>
+	<option value="24">Adli Tıp</option>
+	<option value="25">Aile Hekimliği</option>
+	<option value="26">Çocuk Sağlığı ve Hastalıkları</option>
+	<option value="27">Çocuk Allerjisi</option>
+	<option value="28">Çocuk Enfeksiyon</option>
+	<option value="29">Çocuk Gastroenteroloji-Hepatoloji Ve Beslenme</option>
+	<option value="30">Çocuk Hematoloji - Onkoloji</option>
+	<option value="31">Çocuk Kardiyoloji</option>
+	<option value="32">Çocuk Nefroloji</option>
+	<option value="33">Çocuk Nöroloji</option>
+	<option value="34">Yenidoğan</option>
+	<option value="35">Çocuk ve Ergen Ruh Sağlığı Hastalıkları</option>
+	<option value="36">Dermatoloji</option>
+	<option value="37">Enfeksiyon Hastalıkları ve Klinik Mikrobiyoloji</option>
+	<option value="38">Fiziksel Tıp ve Rehabilitasyon</option>
+	<option value="39">Göğüs Hastalıkları</option>
+	<option value="40">Halk Sağlığı</option>
+	<option value="41">İç Hastalıkları</option>
+	<option value="42">Endokrinoloji ve Metabolizma</option>
+	<option value="43">Gastroenteroloji</option>
+	<option value="44">Genel Dahiliye</option>
+	<option value="45">Geriatri</option>
+	<option value="46">Hematoloji</option>
+	<option value="47">İmmünoloji</option>
+	<option value="48">Nefroloji</option>
+	<option value="49">Romatoloji</option>
+	<option value="50">Tıbbi Onkoloji</option>
+	<option value="51">Kardiyoloji</option>
+	<option value="52">Nöroloji</option>
+	<option value="53">Nükleer Tıp</option>
+	<option value="54">Radyasyon Onkolojisi</option>
+	<option value="55">Radyoloji</option>
+	<option value="56">Ruh Sağlığı ve Hastalıkları</option>
+	<option value="57">Tıbbi Farmakoloji</option>
+	<option value="58">Tıbbi Genetik</option>
+	<option value="59">Anatomi</option>
+	<option value="60">Biyofizik</option>
+	<option value="61">Biyoistatistik</option>
+	<option value="62">Fizyoloji</option>
+	<option value="63">Histoloji ve Embriyoloji</option>
+	<option value="64">İmmünoloji-Temel Tıp</option>
+	<option value="65">Tıbbi Biyokimya</option>
+	<option value="66">Tıbbi Biyoloji</option>
+	<option value="67">Tıbbi Mikrobiyoloji</option>
+	<option value="68">Tıp Eğitimi</option>
+	<option value="69">Tıp Tarihi ve Etik</option>
+	<option value="70">Adana, Alanya, İzmir, İstanbul, Konya</option>
+	<option value="71">Ankara ile ortak en az 1 dış merkez</option>
+	<option value="72">Sadece dış merkez</option>
+	<option value="73">Sadece Ankara</option>
+	<option value="74">Sadece Adana</option>
+	<option value="75">Adana'dan en az 1</option>
+	<option value="76">Sadece Konya</option>
+	<option value="77">Konya'dan en az 1</option>
+	<option value="78">Sadece Alanya</option>
+	<option value="79">Alanya'dan en az 1</option>
+	<option value="80">Sadece İzmir</option>
+	<option value="81">İzmir'den en az 1</option>
+	<option value="82">Sadece İstanbul</option>
+	<option value="83">İstanbul'dan en az 1</option> 
+	<option value="84">Adana'dan ama Adana kelimesi vurgulanmamış (2018-2019)</option> 
+</select> 
+<br /> <br />
+<a href="WOSnumber.png"> WOS numarası makalenin altındadır (göster)</a> <br />
+<div class="row">
+   <div class="column">
+Makalenin WOS numarasını yazınız <br /> WOS:<input type=text name = WOSnumber id="WOSnumber"></text> <br />
+<button onclick="displayWOSdocument()" title="Üniversite içinden">Makaleyi göster</button> <button onclick="displayWOScitation()" title="Üniversite içinden">Atıflarını göster</button><br />
+<button onclick="displayWOSfree()" title="Üniversite dışından ve proxy yok ise">Kısıtlı erişim</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="displayWOScitfree()" title="Üniversite dışından ve proxy yok ise">Kısıtlı erişim</button> <br />
+<br />
+Makalenin PubmedID numarasını yazınız <br />pmid:<input type=text name = pmidnumber id="pmidnumber"></text> <br />
+<button onclick="displayPIDdocument()">Makaleyi göster</button>
+<button onclick="displayPIDcitation()">Atıflarını göster</button>
+<button onclick="displayPIDold()">Eski Pubmed</button> <br /> <br />
+Makalenin TRdizin kodunu yazınız <br /><input type=text name = TRDizin kodu id="trdizinid"></text>=<br />
+<button onclick="displayTRdizindocument()">Makaleyi göster</button><br />
+	</div>
+   <div class="column">
+Makalenin Elsevier numarasını (eid) yazınız <br /> eid: 2-s2.0-<input type=text name = eidnumber id="eidnumber"></text> <br />
+<button onclick="displayEIDdocument()" title="Üniversite içinden">Makaleyi göster</button> <button onclick="displayEIDcitation()" title="Üniversite içinden">Atıflarını göster</button><br /> <br /> <br />   
+Makalenin DOI numarasını (doi) yazınız <br />https://doi.org/<input type=text name = doidnumber id="doinumber"></text>  <br /> 
+<button onclick="displayDOIdocument()">Makaleyi göster</button>
+<button onclick="displayDOIWosdocument()" title="Makale WOS'da taranıyorsa görebilirsiniz">WOS'da göster</button><br /> <br /> 
+
+	</div>
+</div>
+</div>
+<div id="Yazar" class="tabcontent">
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="yazar-id.htm" target="_blank">Yazarların ID'lerine buradan ulaşabilirsiniz (tıklayınız)</a> <br /> 
+<div class="row">
+   <div class="column">
+Yazarın ResearcherID'ini (Publons) yazınız <br /> <input type=text name = researcherIDnumber id="ridnumber"></text> <br />
+<button onclick="displayridResearcher()">Yazarı göster</button>
+<button onclick="copyrid()">Arama metni</button> <br /> <br />
+Yazarın ORCID'ini  yazınız <br /> http://orcid.org/<input type=text name = orcId id="orcidnumber"></text> <br />
+<button onclick="displayorcidResearcher()">Yazarı göster</button> <button onclick="copyorcid()">Arama metni</button> <br /> <br /> 
+Yazarın Elsevier pure ismini  yazınız <br /> <input type=text name = baskent pure id="pureName"></text> <br />
+<button onclick="displaypureResearcher()">Yazarı göster</button> <br /> <br /> 
+	</div>
+   <div class="column">
+Yazarın ScopusID'ini  yazınız <br /> <input type=text name = scopusId id="sidnumber"></text> <br />  
+<button onclick="displaysidResearcher()">Yazarı göster</button> <button onclick="displayMendeley()">Mendeley</button> <br />  <br />
+Yazarın YÖK authorID'ini  yazınız <br /> <input type=text name = yokId id="yokauthorID"></text> <br />
+<button onclick="displayyokResearcher()">Yazarı göster</button>  <br /> <br /> 
+Yazarın adını ve soyadını yazınız <br /> <input type=text name = namesurname id="namesurname"></text> <br />
+<button onclick="displaypubmedResearcher()" title="Pubmed'de arama yaparken Türkçe harf kullanmayınız">Pubmed'de</button>
+<button onclick="displayTRdizinResearcher()" title="TRdizin'de arama yaparken Türkçe harf kullanınız">TRdizin'de</button><br />
+<button onclick="displayTRdizindeWOS()" title="TRdizin'de arama yaparken Türkçe harf kullanınız" >TRdizin'de WOS makalesi bul</button>
+	</div>
+</div>
+Başkent Üniversitesi Sayfaları <br />
+ <button onclick="displayyokBaskent()">YÖKSİS Sayfası</button>
+ <button onclick="displayTRdizinBaskent()">TRdizin Sayfası</button>
+ <button onclick="displaypureBaskent()">Elsevier Pure Sayfası</button>
+ <button onclick="displayopenAccessBaskent()">Açık Erişim Sayfası</button><br /><br />
+ Başkent Üniversitesi Tıp Fakültesi Sayfaları <br />
+ <button onclick="displayyokMed()">YÖKSİS Sayfası</button>
+ <button onclick="displayTRdizinMed()">TRdizin Sayfası</button>
+ <button onclick="displaypureMed()">Elsevier Pure Sayfası</button> 
+ <button onclick="displayopenAccessMed()">Açık Erişim Sayfası</button> 
+ <button onclick="displaypublonsBaskent()">Publons Sayfası</button> 
+
+</div>
+<div id="BelgeBilgi" class="tabcontent">
+<a href="https://baskentedutr-my.sharepoint.com/:b:/g/personal/tipdekanlikbilisim_baskent_edu_tr/ERmiTTbCs8VNroAchms1vaABHC7H_yMziODWNvJ73SzrMA?e=1VixER" target="_blank">
+Web of Scienca'da Makale-Atıf-Yazar Nasıl aranır? (Tıklayarak okuyabilirsiniz)</a><br /><br />
+ BUTF kaynaklı, SCI-E, SSCI, AHCI'de kayıtlı yayınların 2020 Ocak ayı geçici analizleri <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="https://baskentedutr-my.sharepoint.com/:f:/g/personal/tipdekanlikbilisim_baskent_edu_tr/EjsVaDV3-OxEnbiMvCzz6p4BKHEcWsL0JjjCC7giV-cqBg?e=Q1Js3e" target="_blank">
+Klasörden indiriniz(tıklayınız)</a><br /> <br />
+Sadece aşağıdaki indekslerin kutusu seçilerek oluşturulmuştur <br />
+<img src="moresettings.png" alt="Seçili indeksler">
+</div>
+
+
+<script>
+WOSadvancedURL = "http://apps.webofknowledge.com";
+sidText = "";
+
+function openSection(evt, sectionName) {
+  // Declare all variables
+  var i, tabcontent, tablinks;
+
+  // Get all elements with class="tabcontent" and hide them
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+
+  // Get all elements with class="tablinks" and remove the class "active"
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+
+  // Show the current tab, and add an "active" class to the link that opened the tab
+  document.getElementById(sectionName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
+
+function displayWOSdocument() {
+	w=document.getElementById('WOSnumber').value;
+	urlText = "http://ws.isiknowledge.com/cps/openurl/service?url_ver=Z39.88-2004&rft_id=info:ut/"+w;
+	window.open(urlText,"_blank");
+	}
+function displayWOScitation() {
+	w=document.getElementById('WOSnumber').value;
+	urlText = "http://ws.isiknowledge.com/cps/openurl/service?url_ver=Z39.88-2004&rft_id=info:ut/"+w+"&svc_val_fmt=info:ofi/fmt:kev:mtx:sch_svc&svc.citing=yes";
+	window.open(urlText,"_blank");
+	}
+function displayWOSfree() {
+	w=document.getElementById('WOSnumber').value;
+	urlText = "https://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=Publons&SrcAuth=Publons_CEL&KeyUT=WOS:"+w+"&DestLinkType=FullRecord&DestApp=WOS_CPL";
+	window.open(urlText,"_blank");
+	}
+function displayWOScitfree() {
+	w=document.getElementById('WOSnumber').value;
+	urlText = "https://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=Publons&SrcAuth=Publons_CEL&KeyUT=WOS:"+w+"&DestLinkType=CitingArticles&DestApp=WOS_CPL";
+	window.open(urlText,"_blank");
+	}
+function displayEIDdocument() {
+	w=document.getElementById('eidnumber').value;
+	urlText = "https://www.scopus.com/record/display.uri?eid=2-s2.0-"+w+"&origin=resultslist";
+	window.open(urlText,"_blank");
+	}
+function displayPIDdocument() {
+	w=document.getElementById('pmidnumber').value;
+	urlText = "https://pubmed.ncbi.nlm.nih.gov/"+w;
+	window.open(urlText,"_blank");
+	}
+function displayPIDcitation() {
+	w=document.getElementById('pmidnumber').value;
+	urlText = "https://pubmed.ncbi.nlm.nih.gov/"+w+"#citedby";
+	window.open(urlText,"_blank");
+	}
+function displayPIDold() {
+	w=document.getElementById('pmidnumber').value;
+	urlText = "https://www.ncbi.nlm.nih.gov/pubmed/"+w;
+	window.open(urlText,"_blank");
+	}
+function displayDOIdocument() {
+	w=document.getElementById('doinumber').value;
+	urlText = "https://doi.org/"+w;
+	window.open(urlText,"_blank");
+	}
+function displayDOIWosdocument() {
+	w=document.getElementById('doinumber').value;
+	urlText = "http://ws.isiknowledge.com/cps/openurl/service?url_ver=Z39.88-2004&rft_id=info:doi/"+w;
+	window.open(urlText,"_blank");
+	}
+function displayTRdizindocument() {
+	w=document.getElementById('trdizinid').value;
+	urlText = "https://trdizin.gov.tr/publication/paper/detail/"+w;
+	window.open(urlText,"_blank");
+	}
+
+function displayEIDcitation() {
+	w=document.getElementById('eidnumber').value;
+	urlText = "https://www.scopus.com/search/submit/citedby.uri?eid=2-s2.0-"+w+"&src=s&origin=resultslist";
+	window.open(urlText,"_blank");
+	}
+function displayridResearcher() {
+	w=document.getElementById('ridnumber').value;
+	urlText = "https://publons.com/researcher/"+w+"/";
+	window.open(urlText,"_blank");
+	}
+function copyrid() {
+	w=document.getElementById('ridnumber').value;
+	document.getElementById('searchText').value = "AI="+w;
+	var copyText = document.getElementById('searchText');
+	copyText.select();
+	document.execCommand("copy");
+	window.open(WOSadvancedURL,"_blank");
+	}
+function copyorcid() {
+	w=document.getElementById('orcidnumber').value;
+	document.getElementById('searchText').value = "AI="+w;
+	var copyText = document.getElementById('searchText');
+	copyText.select();
+	document.execCommand("copy");
+	window.open(WOSadvancedURL,"_blank");
+	}
+
+function displaypublonsBaskent() {
+	urlText = "https://publons.com/institution/7774/";
+	window.open(urlText,"_blank");
+	}
+function displaysidResearcher() {
+	w=document.getElementById('sidnumber').value;
+	urlText = "http://www.scopus.com/authid/detail.uri?origin=resultslist&authorId="+w;
+	window.open(urlText,"_blank");
+	}
+function displayMendeley() {
+	w=document.getElementById('sidnumber').value;
+	urlText = "https://www.mendeley.com/authors/"+w+"/";
+	window.open(urlText,"_blank");
+	}
+function displayorcidResearcher() {
+	w=document.getElementById('orcidnumber').value;
+	urlText = "https://orcid.org/"+w;
+	window.open(urlText,"_blank");
+	}
+function displaypureResearcher() {
+	w=document.getElementById('pureName').value;
+	urlText = "https://baskent.elsevierpure.com/en/persons/"+w;
+	window.open(urlText,"_blank");
+}
+function displayyokResearcher() {
+	w=document.getElementById('yokauthorID').value;
+	urlText = "https://akademik.yok.gov.tr/AkademikArama/AkademisyenGorevOgrenimBilgileri?islem=direct&authorId="+w;
+	window.open(urlText,"_blank");
+	}
+function displaypubmedResearcher() {
+	w=document.getElementById('namesurname').value;
+	urlText = "https://pubmed.ncbi.nlm.nih.gov/?term="+w.replace(" ","+")+"%5BAuthor%5D&sort=date";
+	window.open(urlText,"_blank");
+	}
+function displayTRdizinResearcher() {
+	w=document.getElementById('namesurname').value;
+	urlText = "https://trdizin.gov.tr/search/searchResults.xhtml?from=1963&to=2030&database=Fen-Sosyal&query=TRDDocument.authors-AND-"+w.replace(" ","%20");
+	window.open(urlText,"_blank");
+	}
+function displayTRdizindeWOS() {
+	w=document.getElementById('namesurname').value;
+	urlText = "https://trdizin.gov.tr/search/wos/results.xhtml?query="+w.replace(" ","%20");
+	window.open(urlText,"_blank");
+	}
+function displayyokMed() {
+	urlText = "https://akademik.yok.gov.tr/AkademikArama/AkademisyenArama?islem=SQvnIyDdbo2J6300YcDPOXzTRrtei7zZkkQPhHRJz_vJ7Auqd-BXdaB8UCTSgbo7";
+	window.open(urlText,"_blank");
+	}
+function displayyokBaskent() {
+	urlText = "https://akademik.yok.gov.tr/AkademikArama/AkademisyenArama?islem=RiKy9zt6sSjdnu7RBj1k589kb8kPaQOJB19t78z4z2hZ0rDnHIo0dVL3b_ZK_h53";
+	window.open(urlText,"_blank");
+	}
+function displaypureBaskent() {
+	urlText = "https://baskent.elsevierpure.com/en/";
+	window.open(urlText,"_blank");
+	}
+function displayopenAccessBaskent () {
+	urlText = "http://dspace.baskent.edu.tr";
+	window.open(urlText,"_blank");
+}
+function displayTRdizinBaskent () {
+	urlText = "https://trdizin.gov.tr/search/searchResults.xhtml?from=1963&to=2030&database=Fen-Sosyal&order=TRDDocument.year-DESC&query=TRDDocument.authorInstitutions-AND-Başkent+Üniversitesi";
+	window.open(urlText,"_blank");
+}
+function displayTRdizinMed () {
+	urlText = "https://trdizin.gov.tr/search/searchResults.xhtml?from=1963&to=2030&database=Fen-Sosyal&order=TRDDocument.year-DESC&query=TRDDocument.authorInstitutions-AND-Başkent+Üniversitesi+Tıp+Fakültesi";
+	window.open(urlText,"_blank");
+}
+function displaypureMed() {
+	urlText = "https://baskent.elsevierpure.com/en/organisations/faculty-of-medicine/persons/";
+	window.open(urlText,"_blank");
+	}
+function displayopenAccessMed() {
+	urlText = "http://dspace.baskent.edu.tr/handle/11727/1403";
+	window.open(urlText,"_blank");
+}
+function urlChanged () {
+	urlText = document.getElementById('advURL').value;
+	var pos = urlText.search ('SID=');
+	if (pos != -1) {
+	sidText = urlText.slice (pos+4,pos+23);
+	WOSadvancedURL = "http://apps.webofknowledge.com/WOS_AdvancedSearch_input.do?SID="+sidText+"&product=WOS&search_mode=AdvancedSearch";
+	document.getElementById('displaySID').innerHTML = 'SID alındı, AdvancedSearch sayfasına gider';
+	}
+}
+function copyFunction(chosen) {
+	var i= Number (chosen);
+	document.getElementById('searchText').value=queryT[i];
+}
+
+function openWOSw (){
+	var copyText = document.getElementById('searchText');
+	copyText.select();
+	document.execCommand("copy");
+	window.open(WOSadvancedURL,"_blank");
+}
+
+
+
+	var queryT = [];
+// Başkent Üniversitesi
+	queryT [0] = "AD=(baskent univ)" ;
+// Başkent Üniversitesi Tıp Fakültesi
+	queryT [1] = "( AD=(baskent univ SAME (Hosp* OR Adana* OR Alanya* OR Izmir* OR Istanbul* Konya* OR Med* OR Fac Med OR Arastirma Merkezi OR Tip* OR Ankara Training OR Kardiyol* OR Pathol* OR Patol* OR Pulm* OR Cardiol* OR Radiol* OR Orthopaed* OR Pediat* OR Paediat* OR Radiat* OR Nucl* OR Chest* OR Gen* OR Surg* OR Anat* OR Neurol* OR Genet* OR Transplant* OR Transplantat* OR Anesthesiol* OR Infect* Infeksiyon* OR Mikrobiyol * OR Nephrol* OR Endocrino* OR Oncol* OR Internal Med OR Gastroenterol* OR Otolaryngol* OR Otorhinolaryngol* OR Kulak* Hematol* OR Cardiovasc* OR Neurosurg* OR Ophthalmol* OR Family* OR Biochem* OR Physiol* OR Emergency* OR Plast* OR Reconstruct* OR Histol* OR Gastroenterohepatol* OR Immunol* OR Algol* OR Neck* OR Microbiol* OR Jinekol* OR Gynecol* OR Obstet* OR GyneOncol* OR Kadin* OR Pharmacol* OR Child* OR Phys Med OR Psychiat* OR Urol* OR Phys Therapy OR Biostat* OR Neonatol* OR Dermatol* OR Thorac* OR Outpatient*) ) OR (AD=baskent univ AND (AU=(Ozdemir, BH) OR AU=(Ayhan, A) OR AU=(Yildirir, A) OR AU=(Altundag, O) OR AU=(Kirnap, M) OR AU=(Baskin, E) OR AU=(Oksuz, E) OR AU=(Ozyilkan, O) OR AU=(Haberal, M) OR AU=(Yerli, H) OR AU=(Aydin, Elcin)) ) ) NOT AD=(baskent univ SAME Ankara SAME ((Dis hekimligi OR Dent* OR Nursing OR Periodontol* ))) NOT AD=(baskent univ SAME Adana SAME ((Dis hekimligi OR Dent* OR Nursing OR Periodontol* )))" ;
+// Anesteziyoloji ve Reanimasyon
+	queryT [2] = "AD=(baskent univ SAME (Anesthesiol* OR Anestezi OR Algol* OR Agri OR Intens* OR Yogun)) OR (AD= baskent univ AND ((AU=Kayhan, Zeynep ) OR (AU=Pirat, Aras ) OR (AU=Zeyneloglu, Pinar ) OR (AU =Arslan, Gulnaz) OR (AU =Torgay, Adnan) OR (AU =Aribogan, A) OR (AU =Araz, Coskun) OR (AU =Akpek, EA) ))" ;
+// Algoloji
+	queryT [3] = "AD=(baskent univ SAME (Algo* OR Agri))" ;
+// Yoğun Bakım
+	queryT [4] = "AD=(baskent univ SAME (Intens* OR Yogun))" ;
+// Beyin ve Sinir Cerrahisi
+	queryT [5] = "AD=(baskent univ SAME (Neurosurg* OR Beyin)) OR (AD= baskent univ AND ((AU=Altinors, Nur ) OR (AU=Caner, Hakan ) OR (AU=Atalay, Basar) OR (AU=Yilmaz, Cem) )) " ;
+// Çocuk Cerrahisi
+	queryT [6] = "AD=(baskent univ SAME (Pediat Surg OR Paediat Surg OR Cocuk Cer*))  OR (AD= baskent univ AND (AU=Temiz, Abdulkerim)) " ;
+// Genel Cerrahi
+	queryT [7] = "AD=(baskent univ SAME (Surgery NOT Otorhinolaryngol NOT ENT NOT Maxillofacial NOT Oral NOT Neck NOT Reconstruct NOT Plast NOT Pediat NOT Paediat NOT Cardiovasc NOT Cardiac NOT Cardiothorac NOT Cardiothoras NOT Thorac NOT Orthopaed NOT Orthoped NOT Ortoped* NOT Trauma NOT Neck)) OR AD=(baskent univ SAME Genel Cerrahi) OR AD=(baskent univ SAME (Transplant* NOT Immunol NOT Marrow NOT Gene NOT GENES)) OR (AD= baskent univ AND ((AU=Kirnap, M) OR (AU=Karakayali, H) OR (AU=Moray, G) OR (AU=Bilgin, N) OR (AU=Haberal, M)))" ;
+// Transplantasyon
+	queryT [8] = "AD=(baskent univ SAME (Transplant* NOT Immunol NOT Marrow NOT Gene NOT Genes))" ;
+// Yanık
+	queryT [9] = "AD=(baskent univ SAME (Burn OR Yanik))" ;
+// Göğüs Cerrahisi
+	queryT [10] = "AD=(baskent univ SAME (Thorac OR Cardiothorac OR Gogus Cer* ))" ;
+// Göz Hastalıkları
+	queryT [11] = "AD=(baskent univ SAME (Ophthalmol OR Eye OR Goz OR Oftal*)) OR(AD= baskent univ AND ((AU=Akova, YA ) OR (AU=Yilmaz, Gursel) OR (AU=Akman, Ahmet) OR (AU =Aydin, Pinar) OR (AU = Oto, Sibel) OR (AU =Altinors, DD) OR (AU =Akkoyun, I) OR (AU=Altan-Yaycioglu, R) ))" ;
+// Kadın Hastalıkları ve Doğum
+	queryT [12] = "AD=(baskent univ SAME (Obstet OR Gynecol OR Kadin OR GyneOncol* OR Perinatal OR Reprod Endocrinol)) OR (AD= baskent univ AND ((AU =Ayhan, A) OR (AU =Kuscu, E) OR (AU =Zeyneloglu, H) OR (AU =Zeyneloglu, HB) OR (AU =Dursun, P) OR (AU =Haberal, Ali) OR (AU =Tarim, E) OR (AU =Onalan, G) OR (AU =Ozcimen,EE)   ))" ;
+// Jinekolojik Onkoloji
+	queryT [13] = "AD=(baskent univ SAME (Gynecol Oncol OR GyneOncol*)) OR (AD= baskent univ AND (AU =Ayhan, A))" ;
+// Perinatoloji
+	queryT [14] = "AD=(baskent univ SAME Perinatal*)" ;
+// Üreme Endokrinolojisi ve İnfertilite
+	queryT [15] = "AD=(baskent univ SAME Reprod Endocrinol)" ;
+// Kalp ve Damar Cerrahisi
+	queryT [16] = "AD=(baskent univ SAME (Cardiovasc Surg NOT Pediat NOT Paediat)) OR AD=(baskent univ SAME (Kalp Damar Cer* NOT Cocuk)) OR AD=(baskent univ SAME (Cardiothoras OR Cardiac OR Cardiothorac)) OR (AD= baskent univ AND (AU=Sezgin, Atilla)) OR (AD= baskent univ AND (AU=Aslamaci, S))  OR (AD= baskent univ AND (AU=Akay, T)) " ;
+// Çocuk Kalp ve Damar Cerrahisi
+	queryT [17] = "AD=(baskent univ SAME (Pediat Cardiovasc Surg OR Paediat Cardiovasc Surg OR Cocuk Kalp Cer*))" ;
+// Kulak-Burun-Boğaz Hastalıkları
+	queryT [18] = "AD=(baskent univ SAME (Otorhinolaryngol OR Head & Neck OR ENT OR Otolaryngol OR Kulak)) OR (AD= baskent univ AND ((AU=Ozluoglu, L ) OR (AU=Aydin, Erdinc )))" ;
+// Ortopedi ve Travmatoloji
+	queryT [19] = "AD=(baskent univ SAME (Orthopaed OR Trauma OR Ortoped* Orthoped*))" ;
+// Plastik ve Rekonstrüktif Cerrahi
+	queryT [20] = "AD=(baskent univ SAME (Reconstruct Surg OR Plast*)) OR (AD= baskent univ AND (AU=Borman, H)) OR (AD= baskent univ AND (AU=Uysal, AC)) OR (AD= baskent univ AND (AU=Uysal, CA)) OR (AD= baskent univ AND (AU=Ertas, Nilgun))" ;
+// Tıbbi Patoloji
+	queryT [21] = "AD=(baskent univ SAME (Pathol OR Patol*)) OR (AD= baskent univ AND ((AU=Ozdemir, BH) OR (AU=Oezdemir, Handan) OR (AU=Kayaselcuk,F)))" ;
+// Üroloji
+	queryT [22] = "AD=(baskent univ SAME Urol*) OR (AD= baskent univ AND ((AU=Aygun, Cem ) OR (AU=Ozkardes, H )))" ;
+// Acil Tıp
+	queryT [23] = "AD=(baskent univ SAME (Emergency OR Acil))" ;
+// Adli Tıp
+	queryT [24] = "AD=(baskent univ SAME (Adli OR Foren*)) OR (AD= baskent univ AND (AU=Buken, E)) " ;
+// Aile Hekimliği
+	queryT [25] = "AD=(baskent univ SAME Family Med) OR (AD= baskent univ AND (AU=Oksuz, E)) OR (AD= baskent univ AND (AU=Kut, A))" ;
+// Çocuk Sağlığı ve Hastalıkları
+	queryT [26] = "AD=(baskent univ SAME (Pediat OR Paediat OR Child)) OR AD=(baskent univ SAME (Cocuk NOT Cerrahisi NOT Ruh NOT Psikiya*)) OR (AD= baskent univ AND (AU=Baskin, E))" ;
+// Çocuk Allerjisi
+	queryT [27] = "AD=(baskent univ SAME (Pediat Aller* OR Paediat Aller* OR Child Aller* OR Cocuk Aller*)) OR (AD= baskent univ AND (AU=Ozbek, Ozlem)) " ;
+// Çocuk Enfeksiyon
+	queryT [28] = "AD=(baskent univ SAME (Pediat Infect Dis OR Paediat Infect Dis OR Cocuk Enfek*)) OR (AD= baskent univ AND (AU=Ecevit, Zafer))" ;
+// Çocuk Gastroenteroloji-Hepatoloji Ve Beslenme
+	queryT [29] = "AD=(baskent univ SAME (Pediat Gastroenterol OR Paediat Gastroenterol OR Cocuk Gastro*)) OR (AD= baskent univ AND (AU=Ozcay, Figen))" ;
+// Çocuk Hematoloji - Onkoloji
+	queryT [30] = "AD=(baskent univ SAME (Pediat Hemato* OR Paediat Hemato* OR Cocuk Hemato* OR Paediat Haemato*)) OR (AD= baskent univ AND (AU=Sarialioglu, F)) OR (AD= baskent univ AND (AU=Olcay, Lale))" ;
+// Çocuk Kardiyoloji
+	queryT [31] = "AD=(baskent univ SAME (Pediat Cardiol OR Paediat Cardiol OR Pediat Kardiyol* OR Pediyat Kardiyol* OR Cocuk Kardiyol*)) OR (AD= baskent univ AND (AU=Tokel, K)) OR (AD= baskent univ AND (AU=Tokel, N)) OR (AD= baskent univ AND (AU=Varan, Birgul)) OR (AD= baskent univ AND (AU=Erdogan, Ilkay)) " ;
+// Çocuk Nefroloji
+	queryT [32] = "AD=(baskent univ SAME (Pediat Nephrol OR Paediat Nephrol OR Cocuk Nef*)) OR (AD= baskent univ AND ((AU=Baskin, E ) OR (AU=Gulleroglu, K )))" ;
+// Çocuk Nöroloji
+	queryT [33] = "AD=(baskent univ SAME (Pediat Neurol OR Paediat Neurol OR Cocuk Norol* OR Ped* Norol*))" ;
+// Yenidoğan
+	queryT [34] = "AD=(baskent univ SAME (Neonatol OR Yenidogan)) OR (AD= baskent univ AND ((AU=Gurakan, B) OR (AU=Tarcan, A ) OR (AU=Ecevit, A)))" ;
+// Çocuk ve Ergen Ruh Sağlığı Hastalıkları
+	queryT [35] = "AD=(baskent univ SAME (Child & Adolescent Psychiat OR Ergen Ruh OR Cocuk Psikiyatri* ))" ;
+// Dermatoloji
+	queryT [36] = "AD=(baskent univ SAME (Dermatol* OR Deri OR Zuhrevi)) OR (AD= baskent univ AND ((AU=Seckin, Deniz) OR (AU=Gulec, AT) OR (AU=Ozcan, Deren)))" ;
+// Enfeksiyon Hastalıkları ve Klinik Mikrobiyoloji
+	queryT [37] = "AD=(baskent univ SAME (Infect Dis NOT Pediat NOT Paediat NOT Cocuk)) OR AD=(baskent univ SAME (Infeksiyon NOT Cocuk)) OR AD=(baskent univ SAME (Enfeksiyon NOT Cocuk))  OR (AD= baskent univ AND ((AU=Azap, OK) OR (AU=Arslan, Hande) OR (AU=Demiroglu, Yusuf)))" ;
+// Fiziksel Tıp ve Rehabilitasyon
+	queryT [38] = "AD=(baskent univ SAME (Phys Med OR Phys Therapy OR Fizik Tedavi)) OR (AD= baskent univ AND ((AU=Karatas,Metin) OR (AU=Sozay, Seyhan) OR (AU=Leblebici, B) OR (AU=Tuzun, EH) OR (AU=Turhan, Nur) OR (AU=Adam, Mehmet) OR (AU=Yemisci, OU) ))" ;
+// Göğüs Hastalıkları
+	queryT [39] = "AD=(baskent univ SAME (Pulm* OR Gogus Has*)) OR (AD= baskent univ AND ((AU=Akcay, Sule) OR (AU=Eyuboglu, FO) OR (AU=Ulubay, Gaye) OR (AU=Kupeli, Elif) OR (AU=Bozbas, SS)))" ;
+// Halk Sağlığı
+	queryT [40] = "AD=(baskent univ SAME Publ Hlth) OR (AD= baskent univ AND ((AU=Akin, Ayse ) OR (AU=Erdal, Rengin ) OR (AU=Ozcan, Cihangir ) OR (AU=Akdur, Recep ))) " ;
+// İç Hastalıkları
+	queryT [41] = "AD=(baskent univ SAME (Internal Med OR Ic Hastaliklari OR Dahiliye))" ;
+// Endokrinoloji ve Metabolizma
+	queryT [42] = "AD=(baskent univ SAME (Endocrinol NOT Pediat NOT Paediat NOT Reprod )) OR AD=(baskent univ SAME (Endokrin* NOT Cocuk)) OR (AD= baskent univ AND ((AU=Tutuncu, NB) OR (AU=Demirag, NG) OR (AU=Ertorer, ME) OR (AU=Sahin, Mustafa) OR (AU=Gursoy, Alptekin) ))" ;
+// Gastroenteroloji
+	queryT [43] = "AD=(baskent univ SAME (Gastroenterol NOT Pediat NOT Paediat NOT Cocuk)) OR AD=(baskent univ SAME Gastroenterohepatol*) OR (AD= baskent univ AND ((AU=Boyacioglu, Sedat) OR (AU=Selcuk, H) ))" ;
+// Genel Dahiliye
+	queryT [44] = "AD=(baskent univ SAME (Internal Med OR Ic Hastaliklari OR Dahiliye) NOT(Endo* OR Nephro* OR Nefro* OR Hemat* OR Haemat* OR Onco* OR Onko* OR Gastro* OR Ger* OR Immun* OR Aller* OR Rheum* OR Romat* OR Cardio* OR Kardiyo*)) OR (AD=baskent univ AND (AU=Oguz, AK))" ;
+// Geriatri
+	queryT [45] = "AD=(baskent univ SAME (Geriat* OR Geriyat*) NOT (Rehabil )) OR (AD= baskent univ AND (AU=Doruk, Huseyin))" ;
+// Hematoloji
+	queryT [46] = "AD=(baskent univ SAME ((Hematol OR Haematol) NOT Pediat NOT Paediat NOT Cocuk)) OR AD=(baskent univ SAME (Bone Marrow NOT Child NOT Pediat NOT Paediat)) OR (AD= baskent univ AND ( (AU= (Karakus, S NOT Karakus, SH NOT Karakus Sezen) ) OR (AU=Boga, Can) OR (AU=Ozdogu, Hakan) OR (AU=Koca, Ebru)))" ;
+// İmmünoloji
+	queryT [47] = "AD=(baskent univ SAME (Aller* NOT Pediat NOT Paediat NOT Cocuk NOT Pulm)) OR (AD= baskent univ AND (AU=Musabak, U)) NOT UT=(WOS:000415357200001 OR  WOS:000384800700018) " ;
+// Nefroloji
+	queryT [48] = "AD=(baskent univ SAME (Nephrol NOT Pediat NOT Paediat)) OR AD=(baskent univ SAME (Nefrol*  OR Dialysis Unit)) OR (AD= baskent univ AND ((AU=Sezer, Siren) OR (AU=Tutal, Emre) OR (AU=Ozdemir, Nurhan) OR (AU=Colak, Turan)))" ;
+// Romatoloji
+	queryT [49] = "AD=(baskent univ SAME (Rheumatol NOT Pediat NOT Paediat)) OR AD=(baskent univ SAME (Romatol* NOT Pedi* )) OR (AD= baskent univ AND ((AU=Kart-Koseoglu, H) OR (AU=Yucel, AE) OR (AU=Bitik, B) )) " ;
+// Tıbbi Onkoloji
+	queryT [50] = "AD=(baskent univ SAME Med Oncol) OR (AD=baskent univ AND ( (AU=Altundag, O) OR (AU=Ozyilkan, O) OR (AU=Abali, H) OR (AI=U-7339-2017) OR (AU=Kose, Fatih))) " ;
+// Kardiyoloji
+	queryT [51] = "AD=(baskent univ SAME (Cardiol NOT Pediat NOT Paediat)) OR AD=(baskent univ SAME (Kardiyol* NOT Pediat* NOT Pediyat* NOT Cocuk)) OR (AD= baskent univ AND ( (AU=Yildirir, A) OR (AU=Muderrisoglu, H) OR (AU=Sade, LE)) )" ;
+// Nöroloji
+	queryT [52] = "AD=(baskent univ SAME (Neurol NOT Pediat NOT Paediat)) OR AD=(baskent univ SAME (Norol* NOT Cocuk)) OR (AD= baskent univ AND ((AU=Can, Ufuk) OR (AU=Benli, Sibel) ))" ;
+// Nükleer Tıp
+	queryT [53] = "AD=(baskent univ SAME (Nucl Med OR Nukleer Tip)) OR (AD= baskent univ AND ((AU=Aktas, Ayse) OR (AU=Yapar, AF) OR (AU=Gencoglu, A)) )" ;
+// Radyasyon Onkolojisi
+	queryT [54] = "AD=(baskent univ SAME Radiat Oncol) OR (AD= baskent univ AND ((AU=Guler, OC) OR (AU=Onal, Cem)  OR (AU=Topkan, Erkan) )) " ;
+// Radyoloji
+	queryT [55] = "AD=(baskent univ SAME (Radiol NOT Pediat NOT Paediat NOT Cocuk NOT Dent)) OR AD=(baskent univ SAME (Radyol* NOT Cocuk)) OR AD=(baskent univ SAME (Radyodi* OR Radyoliji)) OR AD=(baskent univ SAME (Radiodi* NOT Dent)) OR (AD= baskent univ AND ((AU=Yerli, H) OR (AU=Elcin, Aydin) OR (AU=Agildere, AM) OR (AU=Uslu, Nihal) OR (AU=Boyvat, Fatih) OR (AU=Coskun, Mehmet)))" ;
+// Ruh Sağlığı ve Hastalıkları
+	queryT [56] = "AD=(baskent univ SAME (Psychiat NOT Child NOT Adolescent)) OR AD=(baskent univ SAME (Psikiyatri* NOT Cocuk)) OR (AD= baskent univ AND ((AU=Ozcurumez, Gamze) OR (AU=Ozcurumez Bilgili, Gamze) ))" ;
+// Tıbbi Farmakoloji
+	queryT [57] = "AD=(baskent univ SAME (Pharma* OR Farma)) OR (AD= baskent univ AND ((AU=Erdem, SR) OR (AU=Aydos, TR) OR (AU=Unal, MT) OR (AU=Tuncer, Meral)  OR (AU=Tufan, Hale))) " ;
+// Tıbbi Genetik
+	queryT [58] = "AD=(baskent univ SAME Dept Med Genet) OR AD=(baskent univ SAME Div Med Genet) OR AD=(baskent univ SAME Fac Med SAME Dept Mol Biol) OR (AD= baskent univ AND ( (AU=Terzi, YK) OR (AU=Yilmaz, Zerrin) OR (AU=Sahin, FI))) " ;
+// Anatomi
+	queryT [59] = "AD=(baskent univ SAME Anat*) OR ( AD= baskent univ AND ((AU=Kurkcuoglu, A) OR (AU=Oktem, Hale)))" ;
+// Biyofizik
+	queryT [60] = "AD=(baskent univ SAME Biophys) OR AD=(baskent univ SAME Biyofizik*)" ;
+// Biyoistatistik
+	queryT [61] = "AD=(baskent univ SAME Biostat) OR AD=(baskent univ SAME Biyoist*) OR (AD= baskent univ AND ((AU=Ogus, Ersin) OR AU=(Sariturk, Cagla)))" ;
+// Fizyoloji
+	queryT [62] = "AD=(baskent univ SAME Physiol) OR AD=(baskent univ SAME Fizyol*) OR ( AD= baskent univ AND ((AU=Kiziltan, Erhan) OR (AU=Dolu, Nazan) OR (AU=Cabioglu, NT) OR (AU=Kazanoglu, Ilknur) OR (AU=Gundogan, NU) )) " ;
+// Histoloji ve Embriyoloji
+	queryT [63] = "AD=(baskent univ SAME Histol*) OR (AD= baskent univ AND (AU=Dagdeviren, A))" ;
+// İmmünoloji-Temel Tıp
+	queryT [64] = "AD=(baskent univ SAME Dept Immun*) OR AD=(baskent univ SAME Transplantat & Tissue Typing Lab) OR (AD= baskent univ AND ((AU=Basturk, Bilkay) OR (AU=(Inal, Ali))) )" ;
+// Tıbbi Biyokimya
+	queryT [65] = "AD=(baskent univ SAME (Biochem OR Biyokimya*))  OR ( AD= baskent univ AND ((AU=Turkoglu, Suna) OR (AU=Eroglu, Derya) OR (AU=Bayraktar, Nilufer) OR (AU=Kulaksizoglu, S))) " ;
+// Tıbbi Biyoloji
+	queryT [66] = "AD=(baskent univ SAME Med Biol) OR AD=(baskent univ SAME Tıbbi Biyol*) OR (AD= baskent univ AND ((AU=Atac, Belgin) OR AU=(Yurtcu, Erkan) OR AU=(Verdi, H))) " ;
+// Tıbbi Mikrobiyoloji
+	queryT [67] = "AD=(baskent univ SAME Tıbbi Mikrobiyol*) OR AD=(baskent univ SAME Med Microbiol*) OR (AD= baskent univ AND ((AU=Basustaoglu, Ahmet) OR AU=(Mirza, Cenk) OR (AU=Demirbilek, Muge) OR (AU=Demirbilek, Muege) OR (AU=Aliskan, Eda) ))" ;
+// Tıp Eğitimi
+	queryT [68] = "(AD=(baskent univ SAME Med* Educ*) AND (AU= (Balkan, Arzu NOT Atalay, KD) ) ) OR (AD= baskent univ AND ((AU=Bilgic, Hayati) OR (AU=Cetinkaya,Selma)))" ;
+// Tıp Tarihi ve Etik
+	queryT [69] = "AD=(baskent univ SAME (Tip Tarihi OR Med Hist)) OR (AD=baskent univ AND (AU=Yildirim, RV)) " ;
+// Adana, Alanya, İzmir, İstanbul, Konya
+	queryT [70] = "( AD=(baskent univ SAME (Adana* OR Alanya* OR Izmir* OR Istanbul* OR Konya*))) NOT AD=(baskent univ SAME (Adana OR Konya OR Alanya OR Izmir OR Istanbul) SAME ((Dis hekimligi OR Dent* OR Nursing OR Periodontol* )))" ;
+// Ankara ile ortak en az 1 dış merkez
+	queryT [71] = "( AD=(baskent univ SAME (Adana* OR Alanya* OR Izmir* OR Istanbul* OR Konya*)) AND AD=(baskent univ SAME (Ankara))) NOT AD=(baskent univ SAME (Adana OR Konya OR Alanya OR Izmir OR Istanbul) SAME ((Dis hekimligi OR Dent* OR Nursing OR Periodontol* )))" ;
+// Sadece dış merkez
+	queryT [72] = "( AD=(baskent univ SAME (Adana* OR Alanya* OR Izmir* OR Istanbul* OR Konya*) NOT (Ankara))) NOT AD=(baskent univ SAME (Adana OR Konya OR Alanya OR Izmir OR Istanbul) SAME ((Dis hekimligi OR Dent* OR Nursing OR Periodontol* )))" ;
+// Sadece Ankara
+	queryT [73] = "( AD=(baskent univ SAME (Baskent Univ Hosp* OR Med OR Tip) ) NOT AD=(Adana OR Alanya* OR Izmir* OR Istanbul* OR Konya*)) NOT AD=(baskent univ SAME Ankara SAME ((Dis hekimligi OR Dent* OR Nursing OR Periodontol* )))" ;
+// Sadece Adana
+	queryT [74] = "( AD=(baskent univ SAME (Adana*) ) NOT AD=(Ankara OR Alanya* OR Izmir* OR Istanbul* OR Konya*)) NOT AD=(baskent univ SAME (Adana OR Konya OR Alanya OR Izmir OR Istanbul) SAME ((Dis hekimligi OR Dent* OR Nursing OR Periodontol* )))" ;
+// Adana'dan en az 1
+	queryT [75] = "( AD=(baskent univ SAME (Adana*) )) NOT AD=(Dis hekimligi OR Dent* OR Nursing OR Periodontol* ) OR (AD= baskent univ AND ((AU=Celik, Husnu) OR (AU=Analan, Pinar)  OR (AU=Koc, Zafer) OR (AU=Kozanoglu, Ilknur) OR (AU=Aribogan, A) OR (AU=Ozdogu, Hakan) OR ((AU=Ozyilkan, Ozgur) NOT PY=(2008 OR 2007 OR 2006 OR 2005 OR 2004 OR 2003 OR 2002)) OR (AU=Asma, Suheyl) OR (AU=Kayaselcuk, Fazilet) )) " ;
+// Sadece Konya
+	queryT [76] = "( AD=(baskent univ SAME (Konya*) ) NOT AD=(Ankara OR Alanya* OR Izmir* OR Istanbul* OR Adana*)) NOT AD=(baskent univ SAME (Adana OR Konya OR Alanya OR Izmir OR Istanbul) SAME ((Dis hekimligi OR Dent* OR Nursing OR Periodontol* )))" ;
+// Konya'dan en az 1
+	queryT [77] = "( AD=(baskent univ SAME (Konya*) )) NOT AD=(Dis hekimligi OR Dent* OR Nursing OR Periodontol* )" ;
+// Sadece Alanya
+	queryT [78] = "( AD=(baskent univ SAME (Alanya*) ) NOT AD=(Ankara OR Konya* OR Izmir* OR Istanbul* OR Adana*)) NOT AD=(baskent univ SAME (Adana OR Konya OR Alanya OR Izmir OR Istanbul) SAME ((Dis hekimligi OR Dent* OR Nursing OR Periodontol* )))" ;
+// Alanya'dan en az 1
+	queryT [79] = "( AD=(baskent univ SAME (Alanya*) )) NOT AD=(Dis hekimligi OR Dent* OR Nursing OR Periodontol* )" ;
+// Sadece İzmir
+	queryT [80] = "( AD=(baskent univ SAME (Izmir*) ) NOT AD=(Ankara OR Konya* OR Alanya* OR Istanbul* OR Adana*)) NOT AD=(baskent univ SAME (Adana OR Konya OR Alanya OR Izmir OR Istanbul) SAME ((Dis hekimligi OR Dent* OR Nursing OR Periodontol* )))" ;
+// İzmir'den en az 1
+	queryT [81] = "( AD=(baskent univ SAME (Izmir*) )) NOT AD=(Dis hekimligi OR Dent* OR Nursing OR Periodontol* ) OR (AD= baskent univ AND (AU=Yerli, H)) " ;
+// Sadece İstanbul
+	queryT [82] = "( AD=(baskent univ SAME (Istanbul*) ) NOT AD=(Ankara OR Konya* OR Alanya* OR Izmir* OR Adana*)) NOT AD=(baskent univ SAME (Adana OR Konya OR Alanya OR Izmir OR Istanbul) SAME ((Dis hekimligi OR Dent* OR Nursing OR Periodontol* ))" ;
+// İstanbul'dan en az 1
+	queryT [83] = "( AD=(baskent univ SAME (Istanbul*) )) NOT AD=(Dis hekimligi OR Dent* OR Nursing OR Periodontol* )" ;
+// Adana'dan ama Adana kelimesi vurgulanmamış (2018-2019)
+	queryT [84] = "( AD=(baskent univ) AND UT= (WOS:000479908700001 OR WOS:000477120700001 OR WOS:000469489000001 OR WOS:000463601000020 OR WOS:000461504500008 OR WOS:000441120900016 OR WOS:000435797600021 OR WOS:000439016200006 OR WOS:000427466800026 OR WOS:000428576300034 OR WOS:000423390600008 OR WOS:000416677900012 OR WOS:000427407200003 OR WOS:000431094400010))"
+
+</script>
+</body>
+</html>
