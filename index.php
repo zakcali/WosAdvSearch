@@ -126,8 +126,8 @@ Yazarın ResearcherID'ini (Publons) yazınız <br /> <input type=text name = res
 <button onclick="copyrid()">Arama metni</button> <br /> <br />
 Yazarın ORCID'ini  yazınız <br /> http://orcid.org/<input type=text name = orcId id="orcidnumber"></text>
 <button onclick="previousOrcid()"><</button> <button onclick="nextOrcid()">></button> <br />
-<button onclick="displayorcidResearcher()">Yazarı göster</button> <button onclick="copyorcid()">Arama metni</button> <br /> <br /> 
-Yazarın Elsevier pure ismini  yazınız <br /> <input type=text name = baskent pure id="purename"></text> <br />
+<button onclick="displayorcidResearcher()">Yazarı göster</button> <button onclick="copyorcid()">Arama metni</button> <br /> <br />
+Yazarın Elsevier pure ismini  yazınız <br /> <input type=text name = baskent pure id="purename"></text> <br />  
 <button onclick="displaypureResearcher()">Yazarı göster</button> <br /> <br /> 
 	</div>
    <div class="column">
@@ -135,8 +135,8 @@ Yazarın ScopusID'ini  yazınız <br />
 <input type=text name = scopusId id="sidnumber"></text> &nbsp;
 <button onclick="previousSid()"><</button> <button onclick="nextSid()">></button><br />  
 <button onclick="displaysidResearcher()">Yazarı göster</button> <button onclick="displayMendeley()">Mendeley</button> <br />  <br />
-Yazarın YÖK authorID'ini  yazınız <br /> <input type=text name = yokId id="yokauthorID"></text> <br />
-<button onclick="displayyokResearcher()">Yazarı göster</button>  <br /> <br /> 
+Yazarın YÖK authorID'ini  yazınız <br /> <input type=text name = yokId id="yokauthorID"></text> <br /> 
+<button onclick="displayyokResearcher()">Yazarı göster</button>  <br /> <br />
 Yazarın adını ve soyadını yazınız <br /> <input type=text name = namesurname id="namesurname"></text> <br />
 <button onclick="displaypubmedResearcher()" title="Pubmed'de arama yaparken Türkçe harf kullanmayınız">Pubmed'de</button>
 <button onclick="displayTRdizinResearcher()" title="TRdizin'de arama yaparken Türkçe harf kullanınız">TRdizin'de</button><br />
@@ -164,6 +164,9 @@ Başkent Üniversitesi Sayfaları <br />
 </datalist>
 <br />
 <button onclick="previousAcademician()"><</button> <button onclick="nextAcademician()">></button><br /> 
+<br />Ön İzleme <br />
+<img id="orcidPre" onmouseenter="previeworcidResearcher()" onmouseleave="orcidIcon()" src="orcidicon.png" alt="Orcid">   
+<img id="publonsPre" onmouseenter="previewpublonsResearcher()" onmouseleave="publonsIcon()" src="publonsicon.png" alt="Publons"> <br /> 
 </div>
 <div id="BelgeBilgi" class="tabcontent">
 <a href="https://baskentedutr-my.sharepoint.com/:b:/g/personal/tipdekanlikbilisim_baskent_edu_tr/EQl1QFwaDPpHqdW9xrR_LMIBAF0L2HtjGxo7n7CtRIxLaQ?e=bvTlZX" target="_blank">
@@ -278,16 +281,13 @@ function copyrid() {
 	document.getElementById('searchText').value = "AI="+w;
 // Get the element with id="defaultOpen" and click on it
 document.getElementById("defaultOpen").click();
-
 	}
 function copyorcid() {
 	w=document.getElementById('orcidnumber').value;
 	document.getElementById('searchText').value = "AI="+w;
 // Get the element with id="defaultOpen" and click on it
 document.getElementById("defaultOpen").click();
-
 	}
-
 function displaypublonsBaskent() {
 	urlText = "https://publons.com/institution/7774/";
 	window.open(urlText,"_blank");
@@ -307,11 +307,49 @@ function displayorcidResearcher() {
 	urlText = "https://orcid.org/"+w;
 	window.open(urlText,"_blank");
 	}
+function previeworcidResearcher() {
+	w=document.getElementById('orcidnumber').value;
+	urlText = "https://orcid.org/"+w;
+	document.getElementById('orcidPre').src="loadingicon.png"
+    var xhr =  new XMLHttpRequest();
+    xhr.open("GET", "https://www.googleapis.com/pagespeedonline/v1/runPagespeed?url="+encodeURIComponent(urlText)+"&screenshot=true");
+    xhr.onload = function(){
+// Get the screenshot data.
+    var screenshot = JSON.parse(xhr.responseText).screenshot;
+// Convert the Google's Data to Data URI scheme.
+    var imageData = screenshot.data.replace(/_/g, "/").replace(/-/g, "+");
+// Build the Data URI.
+    document.getElementById('orcidPre').src = "data:" + screenshot.mime_type + ";base64," + imageData;
+// Set the image's source.
+}
+	xhr.send();
+	}
+	
+function orcidIcon() {
+	document.getElementById('orcidPre').src="orcidicon.png"
+	}	
+function previewpublonsResearcher() {
+	w=document.getElementById('ridnumber').value;
+	urlText = "https://publons.com/researcher/"+w+"/";
+	document.getElementById('publonsPre').src="loadingicon.png"
+    var xhr =  new XMLHttpRequest();
+    xhr.open("GET", "https://www.googleapis.com/pagespeedonline/v1/runPagespeed?url="+encodeURIComponent(urlText)+"&screenshot=true");
+    xhr.onload = function(){
+    var screenshot = JSON.parse(xhr.responseText).screenshot;
+    var imageData = screenshot.data.replace(/_/g, "/").replace(/-/g, "+");
+    document.getElementById('publonsPre').src = "data:" + screenshot.mime_type + ";base64," + imageData;
+}
+	xhr.send();
+	}
+	
+function publonsIcon() {
+	document.getElementById('publonsPre').src="publonsicon.png"
+	}	
 function displaypureResearcher() {
 	w=document.getElementById('purename').value;
 	urlText = "https://baskent.elsevierpure.com/en/persons/"+w;
 	window.open(urlText,"_blank");
-}
+	}
 function displayyokResearcher() {
 	w=document.getElementById('yokauthorID').value;
 	urlText = "https://akademik.yok.gov.tr/AkademikArama/AkademisyenGorevOgrenimBilgileri?islem=direct&authorId="+w;
@@ -372,7 +410,6 @@ function displayopenAccessMed() {
 	urlText = "http://dspace.baskent.edu.tr/handle/11727/1403";
 	window.open(urlText,"_blank");
 }
-
 function copyQueryText(chosen) {
 	var i= Number (chosen);
 	document.getElementById('searchText').value=queryT[i];
@@ -398,8 +435,10 @@ let acad = academics[i][2] + " "+ academics[i][3] + ", " + academics[i][4] + ", 
 		}
 }
 function clearAcademician() {
-document.getElementById('selectAcademician').value = "";
-document.getElementById('selectAcademician').focus();
+	orcidIcon();
+	publonsIcon();
+	document.getElementById('selectAcademician').value = "";
+	document.getElementById('selectAcademician').focus();
 }
 function previousAcademician() {
 //	console.log (currentAcad);
@@ -407,6 +446,9 @@ function previousAcademician() {
 	currentAcad--;
 	document.getElementById('selectAcademician').value = academics[currentAcad][2] + " "+ academics[currentAcad][3] + ", " + academics[currentAcad][4] + ", " + academics[currentAcad][5];
 	copyAcademician();	
+	orcidIcon();
+	publonsIcon();
+
 	}
 }
 function nextAcademician() {
@@ -415,6 +457,9 @@ function nextAcademician() {
 	currentAcad++;
 	document.getElementById('selectAcademician').value = academics[currentAcad][2] + " "+ academics[currentAcad][3] + ", " + academics[currentAcad][4] + ", " + academics[currentAcad][5];
 	copyAcademician();	
+	orcidIcon();
+	publonsIcon();
+
 	}
 }
 
