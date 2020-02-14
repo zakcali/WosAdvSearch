@@ -75,8 +75,8 @@ sadece csv dosyalarını okumak ve depCSV, academicsCSV değişkenlerini atamak 
 <body>
 
 <div class="tab">
-  <button class="tablinks active" onclick="openSection(event, 'Makale')"id="defaultOpen">Makale ve atıf ara</button>
-  <button class="tablinks" onclick="openSection(event, 'Yazar')">Yazar ara</button>
+  <button class="tablinks active" onclick="openSection(event, 'Makale')"id= "defaultOpen">Makale ve atıf ara</button>
+  <button class="tablinks" onclick="openSection(event, 'Yazar')" id="reseracherPage">Yazar ara</button>
   <button class="tablinks" onclick="openSection(event, 'BelgeBilgi')">Belge-bilgi indir</button>
 </div>
 <div id="Makale" class="tabcontent">
@@ -158,13 +158,14 @@ Başkent Üniversitesi Sayfaları <br />
  <button onclick="displayopenAccessMed()">Açık Erişim Sayfası</button> <br /> <br />
  <!-- Akademisyen seçimi menüsü -->
 <label for="Akademisyen seçimi">Akademisyen ismini veya bölümünü yazarak seçiniz</label>  <br />
-<input list="academicians" id="selectAcademician" onchange="copyAcademician()" name="acadname"/> <button onclick="clearAcademician()">Sil</button> 
+<input list="academicians" id="selectAcademician" oninput="copyAcademician()" name="acadname"/>  <!-- onchange dosesn't focus, use oninput -->
+<button onclick="clearAcademician()">Sil</button> 
 <datalist id="academicians">
 	<!-- rest is created by window.onload = async function()-->
 </datalist>
 <br />
 <button onclick="previousAcademician()"><</button> <button onclick="nextAcademician()">></button><br /> 
-<br />Ön İzleme <br />
+<br />Ön İzleme (Sembol üzerinde bekleyip geçiniz)<br />
 <img id="orcidPre" onmouseenter="previeworcidResearcher()" onmouseleave="orcidIcon()" src="orcidicon.png" alt="Orcid">   
 <img id="publonsPre" onmouseenter="previewpublonsResearcher()" onmouseleave="publonsIcon()" src="publonsicon.png" alt="Publons"> <br /> 
 </div>
@@ -312,7 +313,7 @@ function previeworcidResearcher() {
 	urlText = "https://orcid.org/"+w;
 	document.getElementById('orcidPre').src="loadingicon.png"
     var xhr =  new XMLHttpRequest();
-    xhr.open("GET", "https://www.googleapis.com/pagespeedonline/v1/runPagespeed?url="+encodeURIComponent(urlText)+"&screenshot=true");
+    xhr.open("GET", "https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url="+encodeURIComponent(urlText)+"&screenshot=true");
     xhr.onload = function(){
 // Get the screenshot data.
     var screenshot = JSON.parse(xhr.responseText).screenshot;
@@ -333,7 +334,7 @@ function previewpublonsResearcher() {
 	urlText = "https://publons.com/researcher/"+w+"/";
 	document.getElementById('publonsPre').src="loadingicon.png"
     var xhr =  new XMLHttpRequest();
-    xhr.open("GET", "https://www.googleapis.com/pagespeedonline/v1/runPagespeed?url="+encodeURIComponent(urlText)+"&screenshot=true");
+    xhr.open("GET", "https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url="+encodeURIComponent(urlText)+"&screenshot=true");
     xhr.onload = function(){
     var screenshot = JSON.parse(xhr.responseText).screenshot;
     var imageData = screenshot.data.replace(/_/g, "/").replace(/-/g, "+");
@@ -431,6 +432,7 @@ let acad = academics[i][2] + " "+ academics[i][3] + ", " + academics[i][4] + ", 
 		document.getElementById('sidnumber').value = academics[i][11];
 		document.getElementById('purename').value = academics[i][16];
 		document.getElementById('namesurname').value = academics[i][2] + " " + academics[i][3] ;
+
 		break; }
 		}
 }
