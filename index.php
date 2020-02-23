@@ -80,10 +80,25 @@ sadece csv dosyalarını okumak ve depCSV, academicsCSV değişkenlerini atamak 
   <button class="tablinks" onclick="openSection(event, 'BelgeBilgi')">Belge-bilgi indir</button>
 </div>
 <div id="Makale" class="tabcontent">
+	<form method="post" action="wos-retrieve.php" id="wosform" target="_blank">
+Yıla göre <input type="radio" name="sortfield" value="PY" checked="checked"> 
+Atıfa göre <input type="radio" name="sortfield" value="TC">  
+Başlangıç tarihi('YYYY-AA-GG')&nbsp;
+<input type="text" name="year1" size="4" maxlength="4">-<input type="text" name="month1" size="2" maxlength="2">-<input type="text" name="day1" size="2" maxlength="2">
+Kayıt numarası olsun<input type="checkbox" name="prrecnum" checked="checked" ><br /> 
+&nbsp;&nbsp;&nbsp;&nbsp;Azalan <input type="radio" name="sortorder" value="D" checked="checked">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Artan <input type="radio" name="sortorder" value="A">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Bitiş tarihi ('YYYY-AA-GG')&nbsp;&nbsp;
+<input type="text" name="year2" size="4" maxlength="4">-<input type="text" name="month2" size="2" maxlength="2">-<input type="text" name="day2" size="2" maxlength="2"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Bağlantılar olsun <input type="checkbox" name="prlinks" checked="checked" > <br />
+
+	<input type="submit" value="Göster"> 
+	</form>
 	Hazır gelen metni değiştirebilirsiniz. Aşağıdaki metni ayrıca seçip kopyalamanıza gerek yoktur. <br />
 	Açılan WOS sayfasındaki "Search" üzerindeki kutuya doğrudan yapıştırabilirsiniz <br />
 	Web of Science'da AdvancedSearch arama kutusuna yazılacak metni giriniz, "WOS arama sayfası" na tıklayınız <br />
-	<textarea rows = "20" cols = "100" name = "Uzun Yazı" id="searchText"></textarea> <br />
+	<textarea rows="20" cols ="100" name="wosQuery" form="wosform" id="searchText"></textarea> <br />
+	
 
 <button onclick="openWOSw()">WOS arama sayfası</button> <a href="advancedsearch.png"> İlk gidişte (bir seferlik) sayfayı kapatınız veya AdvancedSearch menüsüne tıklayınız</a> 
  <br /> <br />
@@ -118,7 +133,7 @@ Makalenin DOI numarasını (doi) yazınız <br />https://doi.org/<input type=tex
 </div>
 </div>
 <div id="Yazar" class="tabcontent">
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="yazar-id.htm" target="_blank">Yazarların ID'lerine buradan ulaşabilirsiniz (tıklayınız)</a> <br /> 
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="author-list.htm" target="_blank">Yazarların ID'lerine buradan ulaşabilirsiniz (tıklayınız)</a> <br /> 
 <div class="row">
    <div class="column">
 Yazarın ResearcherID'ini (Publons) yazınız <br /> <input type=text name = researcherIDnumber id="ridnumber"></text> <br />
@@ -502,12 +517,12 @@ window.onload = function() {
 // İstanbul'dan en az 1
 // queryT [83] = "( AD=(baskent univ SAME (Istanbul*) )) NOT AD=(Dis hekimligi OR Dent* OR Nursing OR Periodontol* )" ;
 
-// let csvurl= 'https://cors-anywhere.herokuapp.com/http://tip2.baskent.edu.tr/maya/departmentQuery.csv'; // different domain
-// let csvurl= 'http://tip2.baskent.edu.tr/maya/departmentQuery.csv'; // same domain
+// let csvurl= 'https://cors-anywhere.herokuapp.com/http://tip2.baskent.edu.tr/maya/department-list.csv'; // different domain
+// let csvurl= 'http://tip2.baskent.edu.tr/maya/department-list.csv'; // same domain
 // let response = await fetch (csvurl);
 // let depCSV = await response.text();
 
-let depCSV = <?php echo json_encode(file_get_contents('departmentQuery.csv')); ?>; 
+let depCSV = <?php echo json_encode(file_get_contents('department-list.csv')); ?>; 
 //read depCSV content from same folder with PHP, instead of javascript aync function fetch
 let results = Papa.parse(depCSV);
 for (var i=0; i<results.data.length; i++) {
@@ -528,7 +543,7 @@ var selectList = document.getElementById('selectDepartment');
     option.text = results.data[i][0];
     selectList.appendChild(option); }
 
-let academicsCSV = <?php echo json_encode(file_get_contents('yazar-id.csv')); ?>; 
+let academicsCSV = <?php echo json_encode(file_get_contents('author-list.csv')); ?>; 
  <!-- Akademisyen seçimi menüsünü oluşturur -->
  let academicResults = Papa.parse(academicsCSV);
 academics = academicResults.data; // Merkez
