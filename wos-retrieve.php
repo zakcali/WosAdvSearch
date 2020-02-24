@@ -1,11 +1,15 @@
 <?php
 set_time_limit(360); // for the line   $retrieve_response = $search_client->retrieve($retrieve_array);
-echo "<style>
+echo '
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<style>
 mark {
   background-color: LightGreen;
   color: black;
 }
-</style>";
+</style>';
 
 // to get different session id's from Web of Science for different users, and use them for one hour
 if (isset($_COOKIE['wSID'])) $wSID = $_COOKIE['wSID'];	else {	
@@ -112,6 +116,15 @@ retrievePage ($retBase, $retCount);
 
 function retrievePage ($firstRec, $recCount) {
 global $queryId, $search_client, $recNumber, $sortfield, $sortorder, $printRecordNumber, $printLinks;
+$preArticle= 'http://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=PARTNER_APP&SrcAuth=LinksAMR&KeyUT=';
+$postArticle = '&DestLinkType=FullRecord&DestApp=ALL_WOS';
+$preCitation = 'http://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=PARTNER_APP&SrcAuth=LinksAMR&KeyUT=';
+$postCitation = '&DestLinkType=CitingArticles&DestApp=ALL_WOS';
+$prefArticle= 'https://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=Publons&SrcAuth=Publons_CEL&KeyUT=';
+$postfArticle = '&DestLinkType=FullRecord&DestApp=WOS_CPL';
+$prefCitation = 'https://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=Publons&SrcAuth=Publons_CEL&KeyUT=';
+$postfCitation = '&DestLinkType=CitingArticles&DestApp=WOS_CPL';
+
 $retrieve_array = array(
 	'queryId' => $queryId,
 	'retrieveParameters' => array(
@@ -178,16 +191,22 @@ for ($a = 0; $a < count($resp['records']); $a++) {
 		}
 	if ($printLinks)  { // print WOS, citation, doi links if user wants so
 	echo "<br>"; 
-		$articleLink= 'http://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=PARTNER_APP&SrcAuth=LinksAMR&KeyUT=' . $onerecord['uid'] . '&DestLinkType=FullRecord&DestApp=ALL_WOS';
+		$articleLink= $preArticle . $onerecord['uid'] .$postArticle  ;
 		echo '<a href="' , $articleLink , '" target="_blank">', $onerecord['uid'], '</a>' ; 	echo '&nbsp;&nbsp;';
 		
-		$citationLink= 'http://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=PARTNER_APP&SrcAuth=LinksAMR&KeyUT=' . $onerecord['uid'] . '&DestLinkType=CitingArticles&DestApp=ALL_WOS';
+		$citationLink=  $preCitation. $onerecord['uid'] . $postCitation;
 		echo '<a href="', $citationLink , '" target="_blank">WOS da atıflar</a>'; echo '&nbsp;&nbsp;';
+
+		$articleLink= $prefArticle. $onerecord['uid'] .$postfArticle ;
+		echo '<a href="' , $articleLink , '" target="_blank">', 'WOS (ULAKBIM dışından)</a>' ; 	echo '&nbsp;&nbsp;';
+		
+		$citationLink=  $prefCitation. $onerecord['uid'] . $postfCitation ;
+		echo '<a href="', $citationLink , '" target="_blank">WOS da atıflar (ULAKBIM dışından)</a>'; echo '&nbsp;&nbsp;';
 		
 		for ($i=0; $i < count ($onerecord['other']); $i++) { 
 			if ($onerecord['other'][$i]['label'] == "Identifier.Xref_Doi") { 
 			$doiLink='https://doi.org/'.$onerecord['other'][$i]['value'];
-			echo '<a href="', $doiLink,'">DOI:',$onerecord['other'][$i]['value'],'</a>' ;
+			echo '<a href="', $doiLink,'">','DOI:',$onerecord['other'][$i]['value'],'</a>' ;
 				}
 			}
 	} // end of create links
