@@ -1,10 +1,7 @@
 <?php
 set_time_limit(360); // for the line   $retrieve_response = $search_client->retrieve($retrieve_array);
-echo '
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-</head>
-<style>
+header('Content-Type: text/html; charset=utf-8');
+echo '<style>
 mark {
   background-color: LightGreen;
   color: black;
@@ -204,7 +201,8 @@ for ($a = 0; $a < count($resp['records']); $a++) {
 		echo '<a href="', $citationLink , '" target="_blank">WOS da atıflar (ULAKBIM dışından)</a>'; echo '&nbsp;&nbsp;';
 		
 		for ($i=0; $i < count ($onerecord['other']); $i++) { 
-			if ($onerecord['other'][$i]['label'] == "Identifier.Xref_Doi") { 
+			if ($onerecord['other'][$i]['label'] == "Identifier.Doi" or 
+				$onerecord['other'][$i]['label'] == "Identifier.Xref_Doi") { 
 			$doiLink='https://doi.org/'.$onerecord['other'][$i]['value'];
 			echo '<a href="', $doiLink,'">','DOI:',$onerecord['other'][$i]['value'],'</a>' ;
 				}
