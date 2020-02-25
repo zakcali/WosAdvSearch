@@ -15,6 +15,7 @@ https://www.recursoscientificos.fecyt.es/sites/default/files/web_of_science_web_
 and here are presentaitons from Clarivate Analytics about WOS APIs: https://www.e-nformation.ro/wp-content/uploads/2018/11/APIs.pdf and https://wok.mimas.ac.uk/support/documentation/presentations/api1018.pdf and https://bg.pw.edu.pl/images/OIN/Omega_PSIR/Web_of_Science_and_Incites_data_Integration_Clarivate_Analytics.pdf
 
 The hard way to use this api is, to use some api tools, as described here: http://www.dlib.org/dlib/march16/li/App2-WebServicesSetup.pdf
+and here: https://sc.lib.miamioh.edu/bitstream/handle/2374.MIA/6053/SOAP%20-%20Publisher%27s%20Version-LHTN-08-2015-0059.pdf?sequence=1&isAllowed=y
 Best easy way is create a tool like http://wokinfo.com/webtools/searchbox/ and supply this tool with prepared query lists.
 
 there are Python source codes for querying wos programmatically, such as https://github.com/enricobacis/wos , https://github.com/karthik/RRR and https://github.com/MSU-Libraries/wos
