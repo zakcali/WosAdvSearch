@@ -38,6 +38,7 @@ then a menu is created with html select tag
 When user selects a department from list, associated query text is copied to a textarea, named wosQuery, id is searchText
 
 Now user has two options:
+
 a) By clicking the button, below the textarea, http://apps.webofknowledge.com/WOS_AdvancedSearch_input.do?&product=WOS&search_mode=AdvancedSearch page is opene in a new tab, and clipboard contains the query text. User must paste querytext to search area, and click Search button in Web of Science site
 
 b) By clicking the button, above the textarea, wos-retrieve.php function is called, and queries on the server side by using WokSearchLite, and creates an output containing publications, and links to publications and citations
