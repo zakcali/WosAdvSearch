@@ -16,11 +16,12 @@ and here are presentaitons from Clarivate Analytics about WOS APIs: https://www.
 
 The hard way to use this api is, to use some api tools, as described here: http://www.dlib.org/dlib/march16/li/App2-WebServicesSetup.pdf
 and here: https://sc.lib.miamioh.edu/bitstream/handle/2374.MIA/6053/SOAP%20-%20Publisher%27s%20Version-LHTN-08-2015-0059.pdf?sequence=1&isAllowed=y
-Best easy way is create a tool like http://wokinfo.com/webtools/searchbox/ and supply this tool with prepared query lists.
 
-there are Python source codes for querying wos programmatically, such as https://github.com/enricobacis/wos , https://github.com/karthik/RRR and https://github.com/MSU-Libraries/wos
+Best way is create a tool like http://wokinfo.com/webtools/searchbox/ and supply this tool with prepared query lists.
 
-Since my university supply me a php server, I had to search for php source codes, like https://gist.github.com/pol/1321660 and https://gist.github.com/domoritz/2012629
+There are Python source codes for querying wos programmatically, such as https://github.com/enricobacis/wos , https://github.com/karthik/RRR and https://github.com/MSU-Libraries/wos
+
+Since my university supply me a server with php capabilities, I had to search for php source codes, like https://gist.github.com/pol/1321660 and https://gist.github.com/domoritz/2012629
 
 
 
