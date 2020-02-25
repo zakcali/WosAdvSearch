@@ -25,7 +25,20 @@ Since my university supply me a server with php capabilities, I had to search fo
 
 # Logic
 There are 3 vertical tabs.
-1- First vertical tab finds publications from various indexes, and creates queries for Web of Science Advanced Search Tab
+
+1- First vertical tab finds publications from various indexes, and creates queries for Web of Science Advanced Search Tab.
+
+departments and associated queries are read from the file named: department-list.csv, by using php script as follows
+let depCSV = <?php echo json_encode(file_get_contents('department-list.csv')); ?>; 
+
+and parsed with papaparse.min.js library, source: https://www.papaparse.com
+
+then a menu is created with html <select .... </select> 
+<select id="selectDepartment" onchange="copyQueryText(this.options[this.selectedIndex].value)">
+	<option value="">Select a department or section</option>
+	<!-- rest is created by window.onload = async function()-->
+</select> 
+
 
 
 
