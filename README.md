@@ -26,21 +26,21 @@ Since my university supply me a server with php capabilities, I had to search fo
 # Logic
 There are 3 vertical tabs.
 
-1- First vertical tab finds publications from various indexes, and creates queries for Web of Science Advanced Search Tab.
+1- First vertical tab finds publications from various indexes, and also creates queries for Web of Science Advanced Search Tab.
 
-departments and associated queries are read from the file named: department-list.csv, by using php script as follows
+departments and associated queries are red from the file named: department-list.csv, by using php script as follows
 json_encode(file_get_contents('department-list.csv')); 
 
 and parsed with papaparse.min.js library, source: https://www.papaparse.com
 
-then a menu is created with html select tag 
+then a clickable menu, containing departments and associated queries is created with html select tag 
 
 When user selects a department from list, associated query text is copied to a textarea, named wosQuery, id is searchText
 
 Now user has two options:
 
-a) By clicking the button, below the textarea, http://apps.webofknowledge.com/WOS_AdvancedSearch_input.do?&product=WOS&search_mode=AdvancedSearch page is opene in a new tab, and clipboard contains the query text. User must paste querytext to search area, and click Search button in Web of Science site
+a) By clicking the button, below the textarea, http://apps.webofknowledge.com/WOS_AdvancedSearch_input.do?&product=WOS&search_mode=AdvancedSearch page is opened in a new tab, and clipboard contains the query text. User must paste query text to search area, and click Search button in Web of Science site himself
 
-b) By clicking the button, above the textarea, wos-retrieve.php function is called, and queries on the server side by using WokSearchLite, and creates an output containing publications, and links to publications and citations
+b) By clicking the button, above the textarea, wos-retrieve.php function is called. This php script queries on the server side by using WokSearchLite api, and creates an output containing publications, and links to publications and citations.
 
 
