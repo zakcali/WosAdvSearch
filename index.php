@@ -7,6 +7,7 @@ sadece csv dosyalarını okumak ve depCSV, academicsCSV değişkenlerini atamak 
     <title>Web of Science'da Ayrıntılı Arama</title>
 <script src="./papaparse.min.js"></script>
 <style>
+
 #selectAcademician
 {
  width:520px;   
@@ -91,14 +92,17 @@ Kayıt numarası olsun<input type="checkbox" name="prrecnum" checked="checked" >
 Bitiş tarihi ('YYYY-AA-GG')&nbsp;&nbsp;
 <input type="text" name="year2" size="4" maxlength="4">-<input type="text" name="month2" size="2" maxlength="2">-<input type="text" name="day2" size="2" maxlength="2"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Bağlantılar olsun <input type="checkbox" name="prlinks" checked="checked" > <br />
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+Yazar sayısı olsun <input type="checkbox" name="nofauthors" checked="checked" > <br />
 
 	<input type="submit" value="Göster"> 
-	</form>
-	Hazır gelen metni değiştirebilirsiniz. Aşağıdaki metni ayrıca seçip kopyalamanıza gerek yoktur. <br />
+
+	<br />Hazır gelen metni değiştirebilirsiniz. Aşağıdaki metni ayrıca seçip kopyalamanıza gerek yoktur. <br />
 	Açılan WOS sayfasındaki "Search" üzerindeki kutuya doğrudan yapıştırabilirsiniz <br />
 	Web of Science'da AdvancedSearch arama kutusuna yazılacak metni giriniz, "WOS arama sayfası" na tıklayınız <br />
-	<textarea rows="20" cols ="100" name="wosQuery" form="wosform" id="searchText"></textarea> <br />
-	
+	<textarea rows="20" cols ="100" name="wosQuery" id="searchText"></textarea> <br />
+	</form>
 
 <button onclick="openWOSw()">WOS arama sayfası</button> <a href="advancedsearch.png"> İlk gidişte (bir seferlik) sayfayı kapatınız veya AdvancedSearch menüsüne tıklayınız</a> 
  <br /> <br />
