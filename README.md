@@ -14,7 +14,7 @@ Here are online and pdf versions of documentation: http://help.incites.clarivate
 https://www.recursoscientificos.fecyt.es/sites/default/files/web_of_science_web_services_3_0.pdf
 and here are presentaitons from Clarivate Analytics about WOS APIs: https://www.e-nformation.ro/wp-content/uploads/2018/11/APIs.pdf and https://wok.mimas.ac.uk/support/documentation/presentations/api1018.pdf
 
-The hard way to use this api is, to use soma api tools, as described here: http://www.dlib.org/dlib/march16/li/App2-WebServicesSetup.pdf
+The hard way to use this api is, to use some api tools, as described here: http://www.dlib.org/dlib/march16/li/App2-WebServicesSetup.pdf
 Best easy way is create a tool like http://wokinfo.com/webtools/searchbox/ and supply this tool with prepared query lists.
 
 
