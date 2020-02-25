@@ -33,7 +33,7 @@ let depCSV = <?php echo json_encode(file_get_contents('department-list.csv')); ?
 
 and parsed with papaparse.min.js library, source: https://www.papaparse.com
 
-then a menu is created with html <select .... </select> 
+then a menu is created with html select tag 
 <select id="selectDepartment" onchange="copyQueryText(this.options[this.selectedIndex].value)">
 	<option value="">Select a department or section</option>
 	<!-- rest is created by window.onload = async function()-->
