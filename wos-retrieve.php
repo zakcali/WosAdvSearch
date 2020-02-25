@@ -206,7 +206,7 @@ for ($a = 0; $a < count($resp['records']); $a++) {
 			if ($onerecord['other'][$i]['label'] == "Identifier.Doi" or 
 				$onerecord['other'][$i]['label'] == "Identifier.Xref_Doi") { 
 			$doiLink='https://doi.org/'.$onerecord['other'][$i]['value'];
-			echo '<a href="', $doiLink,'">','DOI:',$onerecord['other'][$i]['value'],'</a>' ;
+			echo '<a href="', $doiLink,'" target="_blank">','DOI:',$onerecord['other'][$i]['value'],'</a>' ;
 				}
 			}
 	} // end of create links
