@@ -31,6 +31,7 @@ $sortorder='D';
 $wosQuery='';
 $printRecordNumber=FALSE;
 $printLinks=FALSE;
+$printnAuthors=FALSE;
 // create timespanBegin, check if year is entered, month is entered, and day is entered
 $i=0;
 if (""== trim($_POST['year1'])) $year1='1968'; 
@@ -58,6 +59,7 @@ if (isset($_POST['sortorder'])) $sortorder= $_POST['sortorder'];
 if (isset($_POST['wosQuery'])) $wosQuery= $_POST['wosQuery'];
 if (isset($_POST['prrecnum'])) $printRecordNumber= TRUE; // display record numbers on printout
 if (isset($_POST['prlinks'])) $printLinks= TRUE; // display WOS, citation and doi links on output
+if (isset($_POST['nofauthors'])) $printnAuthors=TRUE;
 if (""== trim($_POST['wosQuery'])) exit("sorgu metni bulunamadı, sorgulama yapılamadı"); 
 
 $search_url = "http://search.webofknowledge.com/esti/wokmws/ws/WokSearchLite?wsdl";
@@ -112,7 +114,7 @@ for ($pageNumber=$hundredNumber; $pageNumber>0; $pageNumber--) {
 retrievePage ($retBase, $retCount);
 
 function retrievePage ($firstRec, $recCount) {
-global $queryId, $search_client, $recNumber, $sortfield, $sortorder, $printRecordNumber, $printLinks;
+global $queryId, $search_client, $recNumber, $sortfield, $sortorder, $printRecordNumber, $printLinks, $printnAuthors;
 $preArticle= 'http://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=PARTNER_APP&SrcAuth=LinksAMR&KeyUT=';
 $postArticle = '&DestLinkType=FullRecord&DestApp=ALL_WOS';
 $preCitation = 'http://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=PARTNER_APP&SrcAuth=LinksAMR&KeyUT=';
@@ -208,6 +210,7 @@ for ($a = 0; $a < count($resp['records']); $a++) {
 				}
 			}
 	} // end of create links
+	if ($printnAuthors) echo '&nbsp;&nbsp;','Yazar sayısı = ', count ($authorArray['value']); 
 	echo '<br>';
  echo '</span>'; // change background color of texts
  echo '<hr>'; // thematic change
