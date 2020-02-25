@@ -12,7 +12,7 @@ and http://images.webofknowledge.com/WOKRS534DR1/help/WOS/hp_advanced_examples.h
 Web of Science has an SOAP api,named WokSearchLite the traget file is http://search.webofknowledge.com/esti/wokmws/ws/WokSearchLite and, you can access it within campus.
 Here are online and pdf versions of documentation: http://help.incites.clarivate.com/wosWebServicesLite/WebServicesLiteOverviewGroup/Introduction.html and 
 https://www.recursoscientificos.fecyt.es/sites/default/files/web_of_science_web_services_3_0.pdf
-and here are presentaitons from Clarivate Analytics about WOS APIs: https://www.e-nformation.ro/wp-content/uploads/2018/11/APIs.pdf and https://wok.mimas.ac.uk/support/documentation/presentations/api1018.pdf
+and here are presentaitons from Clarivate Analytics about WOS APIs: https://www.e-nformation.ro/wp-content/uploads/2018/11/APIs.pdf and https://wok.mimas.ac.uk/support/documentation/presentations/api1018.pdf and https://bg.pw.edu.pl/images/OIN/Omega_PSIR/Web_of_Science_and_Incites_data_Integration_Clarivate_Analytics.pdf
 
 The hard way to use this api is, to use some api tools, as described here: http://www.dlib.org/dlib/march16/li/App2-WebServicesSetup.pdf
 Best easy way is create a tool like http://wokinfo.com/webtools/searchbox/ and supply this tool with prepared query lists.
