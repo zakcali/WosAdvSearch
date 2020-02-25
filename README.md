@@ -1,6 +1,6 @@
 # WosAdvSearch
 Web of Science AdvancedSearch Query Creator for Universities
-
+# Introduction
 Web of Science is an indexing service for quality scientific publications worldwide. If you have an ip access, usually in an university campus area, you can search for publications and citations online at their web site: http://apps.webofknowledge.com/
 "Basic Search" option can be redirected from html forms, described and accessed here: http://wokinfo.com/webtools/searchbox/
 
@@ -22,6 +22,10 @@ Best way is create a tool like http://wokinfo.com/webtools/searchbox/ and supply
 There are Python source codes for querying wos programmatically, such as https://github.com/enricobacis/wos , https://github.com/karthik/RRR and https://github.com/MSU-Libraries/wos
 
 Since my university supply me a server with php capabilities, I had to search for php source codes, like https://gist.github.com/pol/1321660 and https://gist.github.com/domoritz/2012629
+
+# Logic
+There are 3 vertical tabs.
+1- First vertical tab finds publications from various indexes, and creates queries for Web of Science Advanced Search Tab
 
 
 
