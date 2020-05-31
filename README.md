@@ -26,7 +26,7 @@ Since my university supply me a server with php capabilities, I had to find php 
 # Logic
 There are 3 horizontal tabs.
 
-1- First vertical tab finds publications from various indexes, and also creates queries for Web of Science Advanced Search Tab.
+1- First  tab finds publications from various indexes, and also creates queries for Web of Science Advanced Search Tab.
 
 departments and associated queries are red from the file named: department-list.csv, by using php script as follows
 json_encode(file_get_contents('department-list.csv')); 
