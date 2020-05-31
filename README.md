@@ -24,7 +24,7 @@ There are Python source codes for querying wos programmatically, such as https:/
 Since my university supply me a server with php capabilities, I had to find php source codes, like https://gist.github.com/pol/1321660 and https://gist.github.com/domoritz/2012629
 
 # Logic
-There are 3 vertical tabs.
+There are 3 horizontal tabs.
 
 1- First vertical tab finds publications from various indexes, and also creates queries for Web of Science Advanced Search Tab.
 
