@@ -416,8 +416,6 @@ let acad = academics[i][2] + " "+ academics[i][3] + ", " + academics[i][4] + ", 
 		}
 }
 function clearAcademician() {
-	orcidIcon();
-	publonsIcon();
 	document.getElementById('selectAcademician').value = "";
 	document.getElementById('selectAcademician').focus();
 }
