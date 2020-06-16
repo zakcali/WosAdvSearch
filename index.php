@@ -332,7 +332,7 @@ function previeworcidResearcher() {
 	urlText = "https://orcid.org/"+w;
 	document.getElementById('orcidPre').src="loadingicon.png"
     var xhr =  new XMLHttpRequest();
-    xhr.open("GET", "https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url="+encodeURIComponent(urlText)+"&screenshot=true");
+    xhr.open("GET", "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url="+encodeURIComponent(urlText)+"&screenshot=true");
     xhr.onload = function(){
 // Get the screenshot data.
     var screenshot = JSON.parse(xhr.responseText).screenshot;
@@ -353,7 +353,7 @@ function previewpublonsResearcher() {
 	urlText = "https://publons.com/researcher/"+w+"/";
 	document.getElementById('publonsPre').src="loadingicon.png"
     var xhr =  new XMLHttpRequest();
-    xhr.open("GET", "https://www.googleapis.com/pagespeedonline/v4/runPagespeed?url="+encodeURIComponent(urlText)+"&screenshot=true");
+    xhr.open("GET", "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url="+encodeURIComponent(urlText)+"&screenshot=true");
     xhr.onload = function(){
     var screenshot = JSON.parse(xhr.responseText).screenshot;
     var imageData = screenshot.data.replace(/_/g, "/").replace(/-/g, "+");
@@ -382,7 +382,7 @@ function displaypubmedResearcher() {
 	}
 function displayTRdizinResearcher() {
 	w=document.getElementById('namesurname').value;
-	urlText = "https://trdizin.gov.tr/search/searchResults.xhtml?from=1963&to=2030&database=Fen-Sosyal&query=TRDDocument.authors-AND-"+w.replace(" ","%20");
+	urlText = "https://trdizin.gov.tr/search/searchResults.xhtml?from=1963&to=2030&database=Fen-Sosyal&query=TRDDocument.authors-AND-"+w.replace(" ","+");
 	window.open(urlText,"_blank");
 	}
 function displayTRdizindeWOS() {
@@ -528,8 +528,11 @@ window.onload = function() {
 
 let depCSV = <?php echo json_encode(file_get_contents('department-list.csv')); ?>; 
 //read depCSV content from same folder with PHP, instead of javascript aync function fetch
-let results = Papa.parse(depCSV);
-for (var i=0; i<results.data.length; i++) {
+let results = Papa.parse(depCSV, {	//parse from csv text
+	header: false,
+	skipEmptyLines: true
+});
+for (var i=1; i<results.data.length; i++) {
 queryT[i] = results.data[i][1]; }
 
 // Append to selectList
@@ -541,7 +544,7 @@ queryT[i] = results.data[i][1]; }
  <!-- Bölüm seçimi menüsünü oluşturur -->
 var selectList = document.getElementById('selectDepartment');
 
- for (var i = 0; i < results.data.length; i++) {
+ for (var i = 1; i < results.data.length; i++) {
     var option = document.createElement("option");
     option.value = i; // results.data [i][0];
     option.text = results.data[i][0];
@@ -549,11 +552,14 @@ var selectList = document.getElementById('selectDepartment');
 
 let academicsCSV = <?php echo json_encode(file_get_contents('author-list.csv')); ?>; 
  <!-- Akademisyen seçimi menüsünü oluşturur -->
- let academicResults = Papa.parse(academicsCSV);
+ let academicResults = Papa.parse(academicsCSV, {	//parse from csv text
+	header: false,
+	skipEmptyLines: true
+});
 academics = academicResults.data; // Merkez
 		
 var acadList = document.getElementById('academicians');		
-for (let i = 0; i < academics.length; i++) {
+for (let i = 1; i < academics.length; i++) {
     let option = document.createElement("option");
     option.value = academics[i][2] + " "+ academics[i][3] + ", " + academics[i][4] + ", " + academics[i][5]; // ad, soyad, ABD, BD
     acadList.appendChild(option); }
