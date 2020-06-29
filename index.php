@@ -250,7 +250,7 @@ function displayWOScitfree() {
 	}
 function displayEIDdocument() {
 	w=document.getElementById('eidnumber').value;
-	urlText = "https://www.scopus.com/record/display.uri?eid=2-s2.0-"+w+"&origin=resultslist";
+	urlText = "https://www.scopus.com/record/display.uri?eid=2-s2.0-"+w.replace(" ","")+"&origin=resultslist";
 	window.open(urlText,"_blank");
 	}
 function displayPIDdocument() {
@@ -285,7 +285,7 @@ function displayTRdizindocument() {
 	}
 function displayEIDcitation() {
 	w=document.getElementById('eidnumber').value;
-	urlText = "https://www.scopus.com/search/submit/citedby.uri?eid=2-s2.0-"+w+"&src=s&origin=resultslist";
+	urlText = "https://www.scopus.com/search/submit/citedby.uri?eid=2-s2.0-"+w.replace(" ","")+"&src=s&origin=resultslist";
 	window.open(urlText,"_blank");
 	}
 function displayridResearcher() {
