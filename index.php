@@ -188,12 +188,15 @@ Başkent Üniversitesi Sayfaları <br />
 <div id="BelgeBilgi" class="tabcontent">
 <a href="https://baskentedutr-my.sharepoint.com/:b:/g/personal/tipdekanlikbilisim_baskent_edu_tr/EQl1QFwaDPpHqdW9xrR_LMIBAF0L2HtjGxo7n7CtRIxLaQ?e=bvTlZX" target="_blank">
 Web of Scienca'da Makale-Atıf-Yazar Nasıl aranır? (Tıklayarak okuyabilirsiniz)</a><br /><br />
- BUTF kaynaklı, SCI-E, SSCI, AHCI'de kayıtlı yayınların 2020 Ocak ayı geçici analizleri <br />
+ BUTF kaynaklı, SCI-E, SSCI, AHCI'de kayıtlı yayınların analizleri <br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a href="https://baskentedutr-my.sharepoint.com/:f:/g/personal/tipdekanlikbilisim_baskent_edu_tr/EjsVaDV3-OxEnbiMvCzz6p4BKHEcWsL0JjjCC7giV-cqBg?e=Q1Js3e" target="_blank">
 Klasörden indiriniz(tıklayınız)</a><br /> <br />
 Sadece aşağıdaki indekslerin kutusu seçilerek oluşturulmuştur <br />
 <img src="moresettings.png" alt="Seçili indeksler">
+
+<br /> Klasörden indirebileceğiniz PuppetWos programı ile sayılar oluşturulmuştur <br />
+<img src="puppet-wos.png">
 </div>
 
 
@@ -342,7 +345,8 @@ function displaypubmedResearcher() {
 	}
 function displayTRdizinResearcher() {
 	w=document.getElementById('namesurname').value;
-	urlText = "https://app.trdizin.gov.tr/search/searchResults.xhtml?from=1963&to=2030&database=Fen-Sosyal&query=TRDDocument.authors-AND-"+encodeURIComponent(w);
+//	urlText = "https://trdizin.gov.tr/search/searchResults.xhtml?from=1963&to=2030&database=Fen-Sosyal&query=TRDDocument.authors-AND-"+w.replace(" ","%20");
+	urlText = "https://app.trdizin.gov.tr/search/searchResults.xhtml?from=1963&to=2030&database=Fen-Sosyal&query=TRDDocument.authorsSearch-AND-"+encodeURIComponent(w);
 	window.open(urlText,"_blank");
 	}
 function displayTRdizindeWOS() {
@@ -371,11 +375,11 @@ function displayMendeleyBaskent() {
 	window.open(urlText,"_blank");
 }
 function displayTRdizinBaskent () {
-	urlText = "https://trdizin.gov.tr/search/searchResults.xhtml?from=1963&to=2030&database=Fen-Sosyal&order=TRDDocument.year-DESC&query=TRDDocument.authorInstitutions-AND-Başkent+Üniversitesi";
+	urlText = "https://app.trdizin.gov.tr/search/searchResults.xhtml?from=1963&to=2020&database=Fen-Sosyal&order=TRDDocument.issue_year-DESC&query=TRDDocument.author_institutionsSearch-AND-Başkent+Üniversitesi";
 	window.open(urlText,"_blank");
 }
 function displayTRdizinMed () {
-	urlText = "https://trdizin.gov.tr/search/searchResults.xhtml?from=1963&to=2030&database=Fen-Sosyal&order=TRDDocument.year-DESC&query=TRDDocument.authorInstitutions-AND-Başkent+Üniversitesi+Tıp+Fakültesi";
+	urlText = "https://app.trdizin.gov.tr/search/searchResults.xhtml?from=1963&to=2020&database=Fen-Sosyal&order=TRDDocument.issue_year-DESC&query=TRDDocument.author_institutionsSearch-AND-Başkent+Üniversitesi+Tıp+Fakültesi";
 	window.open(urlText,"_blank");
 }
 function displaypureMed() {
