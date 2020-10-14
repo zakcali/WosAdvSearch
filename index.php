@@ -85,15 +85,17 @@ sadece csv dosyalarını okumak ve depCSV, academicsCSV değişkenlerini atamak 
 Yıla göre <input type="radio" name="sortfield" value="PY" checked="checked"> 
 Atıfa göre <input type="radio" name="sortfield" value="TC">  
 Başlangıç tarihi('YYYY-AA-GG')&nbsp;
-<input type="text" name="year1" size="4" maxlength="4">-<input type="text" name="month1" size="2" maxlength="2">-<input type="text" name="day1" size="2" maxlength="2">
-Kayıt numarası olsun<input type="checkbox" name="prrecnum" checked="checked" ><br /> 
+<input type="text" name="year1" size="4" maxlength="4">-<input type="text" name="month1" size="2" maxlength="2">-<input type="text" name="day1" size="2" maxlength="2"> 
+Kayıt numarası olsun<input type="checkbox" name="prrecnum" checked="checked" > &nbsp;&nbsp;&nbsp;&nbsp;
+Q1-Q3 durumu gözüksün<input type="checkbox" name="prq13" ><br /> 
 &nbsp;&nbsp;&nbsp;&nbsp;Azalan <input type="radio" name="sortorder" value="D" checked="checked">
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Artan <input type="radio" name="sortorder" value="A">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Bitiş tarihi ('YYYY-AA-GG')&nbsp;&nbsp;
 <input type="text" name="year2" size="4" maxlength="4">-<input type="text" name="month2" size="2" maxlength="2">-<input type="text" name="day2" size="2" maxlength="2"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Bağlantılar olsun <input type="checkbox" name="prlinks" checked="checked" > <br />
+Bağlantılar olsun <input type="checkbox" name="prlinks" checked="checked" > &nbsp;
+Sadece Q1-Q3 grubu olsun<input type="checkbox" name="pronlyq13" > <br />
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;
 Yazar sayısı olsun <input type="checkbox" name="nofauthors" checked="checked" > <br />
 
 	<input type="submit" value="Göster"> 
@@ -351,7 +353,7 @@ function displayTRdizinResearcher() {
 	}
 function displayTRdizindeWOS() {
 	w=document.getElementById('namesurname').value;
-	urlText = "https://app.trdizin.gov.tr/search/wos/results.xhtml?query="+encodeURIComponent(w);
+	urlText = "https://app.trdizin.gov.tr/wos-ara?query="+encodeURIComponent(w);
 	window.open(urlText,"_blank");
 	}
 function displayyokMed() {
