@@ -1,4 +1,5 @@
 <?php
+// to prevent Fatal error: Maximum execution time of 30 seconds exceeded 
 set_time_limit(360); // for the line   $retrieve_response = $search_client->retrieve($retrieve_array);
 header('Content-Type: text/html; charset=utf-8');
 echo '<style>
@@ -24,7 +25,12 @@ if (isset($_COOKIE['wSID'])) $wSID = $_COOKIE['wSID'];	else {
 	} 
 echo $wSID, " sessionID'si kullanılıyor. ";
 
-// to prevent Fatal error: Maximum execution time of 30 seconds exceeded 
+$issnQ1Array = file("issnq1.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES); //read issn codes from Q1-Q3 list
+$issnQ2Array = file("issnq2.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+$issnQ3Array = file("issnq3.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+$eissnQ1Array = file("eissnq1.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+$eissnQ2Array = file("eissnq2.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+$eissnQ3Array = file("eissnq3.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
 $sortfield='PY';
 $sortorder='D';
@@ -32,6 +38,9 @@ $wosQuery='';
 $printRecordNumber=FALSE;
 $printLinks=FALSE;
 $printnAuthors=FALSE;
+$printQ13Group= FALSE;
+$printOnlyQ13= FALSE;
+$qGroup='';
 // create timespanBegin, check if year is entered, month is entered, and day is entered
 $i=0;
 if (""== trim($_POST['year1'])) $year1='1968'; 
@@ -60,6 +69,8 @@ if (isset($_POST['wosQuery'])) $wosQuery= $_POST['wosQuery'];
 if (isset($_POST['prrecnum'])) $printRecordNumber= TRUE; // display record numbers on printout
 if (isset($_POST['prlinks'])) $printLinks= TRUE; // display WOS, citation and doi links on output
 if (isset($_POST['nofauthors'])) $printnAuthors=TRUE;
+if (isset($_POST['prq13'])) $printQ13Group= TRUE; // display Q1, Q2, Q3 group
+if (isset($_POST['pronlyq13'])) $printOnlyQ13= TRUE; // only display if Q<4
 if (""== trim($_POST['wosQuery'])) exit("sorgu metni bulunamadı, sorgulama yapılamadı"); 
 
 $search_url = "http://search.webofknowledge.com/esti/wokmws/ws/WokSearchLite?wsdl";
@@ -98,7 +109,7 @@ if ($n==0) exit("kayıt bulunamadı"); //no records
 // PERFORM a Retrieve operation, by using queryId
 $queryId=$resp['queryId'];
 // echo "Performing retrieve operation by using queryId: ", $queryId, "<br>";
-echo $timespanBegin, " / ", $timespanEnd, " arasında SCI-E, SSCI, AHCI dizinlerince taranan  ";
+echo $timespanBegin, " / ", $timespanEnd, " arasında SCI-E, SSCI, AHCI dizinlerince taranan Q1,Q2,Q3,Q4 grubu ";
 echo $n, " kayıt bulundu. <br> <br>";
 echo "<hr>"; // thematic change
 $retBase = 1; //first record to be retrieved
@@ -114,7 +125,8 @@ for ($pageNumber=$hundredNumber; $pageNumber>0; $pageNumber--) {
 retrievePage ($retBase, $retCount);
 
 function retrievePage ($firstRec, $recCount) {
-global $queryId, $search_client, $recNumber, $sortfield, $sortorder, $printRecordNumber, $printLinks, $printnAuthors;
+global $queryId, $search_client, $recNumber, $sortfield, $sortorder, $printRecordNumber, $printLinks, $printnAuthors, $printQ13Group, $printOnlyQ13;
+global $issnQ1Array, $issnQ2Array,$issnQ3Array, $eissnQ1Array, $eissnQ2Array, $eissnQ3Array, $qGroup;
 $preArticle= 'http://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=PARTNER_APP&SrcAuth=LinksAMR&KeyUT=';
 $postArticle = '&DestLinkType=FullRecord&DestApp=ALL_WOS';
 $preCitation = 'http://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=PARTNER_APP&SrcAuth=LinksAMR&KeyUT=';
@@ -146,11 +158,31 @@ try{
 }
 $resp =(json_decode(json_encode($retrieve_response->return), true));
 // print_r ($resp) ;  // for debugging response text
+
 for ($a = 0; $a < count($resp['records']); $a++) {
 	if (array_key_exists(0, $resp['records']) == TRUE ) 
 		 { $onerecord = $resp['records'][$a]; }// iterate multi record array
 	else { $onerecord = $resp['records']; $a = count($resp['records']);} // there is only one article, print only once
-	++$recNumber; 
+	
+		for ($i=0; $i < count ($onerecord['other']); $i++) { // if issn or eissn number is in Q1-Q3 files, print Q status
+			if ($onerecord['other'][$i]['label'] == "Identifier.Issn") {
+			$docIssn=$onerecord['other'][$i]['value'];
+			$qGroup='';
+				if (in_array($docIssn, $issnQ1Array)) { $qGroup= " Q1";}
+				else if (in_array($docIssn, $issnQ2Array)) { $qGroup= " Q2";}
+				else if (in_array($docIssn, $issnQ3Array)) { $qGroup= " Q3";}
+				
+				}
+			else if ($onerecord['other'][$i]['label'] == "Identifier.Eissn") {
+			$docEissn=$onerecord['other'][$i]['value'];
+				if (in_array($docEissn, $eissnQ1Array)) { $qGroup= " Q1";}
+				else if (in_array($docEissn, $eissnQ2Array)) { $qGroup= " Q2";}
+				else if (in_array($docEissn, $eissnQ3Array)) { $qGroup= " Q3";}
+				}
+			}
+//***************************start of print loop, display Q group, or only display Q1, Q2, Q3
+if ((!$printOnlyQ13)|| ($printOnlyQ13 && $qGroup)) { 
+	++$recNumber; // skip number if not displayed
 	echo '<span style="background-color: #DCDCDC">'; // change background text color for articles
 // https://htmlcolorcodes.com/color-names/
 	if ($printRecordNumber) { // print record number bold 
@@ -210,10 +242,14 @@ for ($a = 0; $a < count($resp['records']); $a++) {
 				}
 			}
 	} // end of create links
-	if ($printnAuthors) echo '&nbsp;&nbsp;','Yazar sayısı = ', count ($authorArray['value']); 
-	echo '<br>';
+	if ($printnAuthors) {echo '&nbsp;&nbsp;','Yazar sayısı = ', count ($authorArray['value']); }
+	
+	if ($printQ13Group && $qGroup) {echo '&nbsp;&nbsp;', $qGroup; } // if Q1-Q3 box is checked in the main program AND Q<4
+			
+//	echo '<br>';
  echo '</span>'; // change background color of texts
  echo '<hr>'; // thematic change
+}///*****end of print loop, display Q group, or only display Q1, Q2, Q3
 	}
 // print_r ($resp);
 
