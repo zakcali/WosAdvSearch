@@ -28,9 +28,13 @@ echo $wSID, " sessionID'si kullanılıyor. ";
 $issnQ1Array = file("issnq1.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES); //read issn codes from Q1-Q3 list
 $issnQ2Array = file("issnq2.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 $issnQ3Array = file("issnq3.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+$issnQ4Array = file("issnq4.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+$issnAHArray = file("issnahci.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 $eissnQ1Array = file("eissnq1.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 $eissnQ2Array = file("eissnq2.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 $eissnQ3Array = file("eissnq3.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+$eissnQ4Array = file("eissnq4.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+$eissnAHArray = file("eissnahci.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
 $sortfield='PY';
 $sortorder='D';
@@ -40,6 +44,7 @@ $printLinks=FALSE;
 $printnAuthors=FALSE;
 $printQ13Group= FALSE;
 $printOnlyQ13= FALSE;
+$printDocType= FALSE;
 $qGroup='';
 // create timespanBegin, check if year is entered, month is entered, and day is entered
 $i=0;
@@ -69,6 +74,8 @@ if (isset($_POST['wosQuery'])) $wosQuery= $_POST['wosQuery'];
 if (isset($_POST['prrecnum'])) $printRecordNumber= TRUE; // display record numbers on printout
 if (isset($_POST['prlinks'])) $printLinks= TRUE; // display WOS, citation and doi links on output
 if (isset($_POST['nofauthors'])) $printnAuthors=TRUE;
+if (isset($_POST['articletype'])) $printDocType=TRUE;
+if (isset($_POST['onlyarticles'])) $printArticles=TRUE;
 if (isset($_POST['prq13'])) $printQ13Group= TRUE; // display Q1, Q2, Q3 group
 if (isset($_POST['pronlyq13'])) $printOnlyQ13= TRUE; // only display if Q<4
 if (""== trim($_POST['wosQuery'])) exit("sorgu metni bulunamadı, sorgulama yapılamadı"); 
@@ -125,8 +132,8 @@ for ($pageNumber=$hundredNumber; $pageNumber>0; $pageNumber--) {
 retrievePage ($retBase, $retCount);
 
 function retrievePage ($firstRec, $recCount) {
-global $queryId, $search_client, $recNumber, $sortfield, $sortorder, $printRecordNumber, $printLinks, $printnAuthors, $printQ13Group, $printOnlyQ13;
-global $issnQ1Array, $issnQ2Array,$issnQ3Array, $eissnQ1Array, $eissnQ2Array, $eissnQ3Array, $qGroup;
+global $queryId, $search_client, $recNumber, $sortfield, $sortorder, $printRecordNumber, $printLinks, $printnAuthors, $printQ13Group, $printOnlyQ13, $printDocType, $printArticles;
+global $issnQ1Array, $issnQ2Array,$issnQ3Array, $issnQ4Array,$issnAHArray, $eissnQ1Array, $eissnQ2Array, $eissnQ3Array, $eissnQ4Array,$eissnAHArray, $qGroup;
 $preArticle= 'http://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=PARTNER_APP&SrcAuth=LinksAMR&KeyUT=';
 $postArticle = '&DestLinkType=FullRecord&DestApp=ALL_WOS';
 $preCitation = 'http://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=PARTNER_APP&SrcAuth=LinksAMR&KeyUT=';
@@ -164,13 +171,16 @@ for ($a = 0; $a < count($resp['records']); $a++) {
 		 { $onerecord = $resp['records'][$a]; }// iterate multi record array
 	else { $onerecord = $resp['records']; $a = count($resp['records']);} // there is only one article, print only once
 	
-		for ($i=0; $i < count ($onerecord['other']); $i++) { // if issn or eissn number is in Q1-Q3 files, print Q status
+	
+	for ($i=0; $i < count ($onerecord['other']); $i++) { // if issn or eissn number is in Q1-Q3 files, print Q status
 			if ($onerecord['other'][$i]['label'] == "Identifier.Issn") {
 			$docIssn=$onerecord['other'][$i]['value'];
-			$qGroup='';
+			$qGroup=' ??';
 				if (in_array($docIssn, $issnQ1Array)) { $qGroup= " Q1";}
 				else if (in_array($docIssn, $issnQ2Array)) { $qGroup= " Q2";}
 				else if (in_array($docIssn, $issnQ3Array)) { $qGroup= " Q3";}
+				else if (in_array($docIssn, $issnQ4Array)) { $qGroup= " Q4";}
+				else if (in_array($docIssn, $issnAHArray)) { $qGroup= " AH";}
 				
 				}
 			else if ($onerecord['other'][$i]['label'] == "Identifier.Eissn") {
@@ -178,11 +188,24 @@ for ($a = 0; $a < count($resp['records']); $a++) {
 				if (in_array($docEissn, $eissnQ1Array)) { $qGroup= " Q1";}
 				else if (in_array($docEissn, $eissnQ2Array)) { $qGroup= " Q2";}
 				else if (in_array($docEissn, $eissnQ3Array)) { $qGroup= " Q3";}
+				else if (in_array($docEissn, $eissnQ4Array)) { $qGroup= " Q4";}
+				else if (in_array($docEissn, $eissnAHArray)) { $qGroup= " AH";}
 				}
 			}
-//***************************start of print loop, display Q group, or only display Q1, Q2, Q3
-if ((!$printOnlyQ13)|| ($printOnlyQ13 && $qGroup)) { 
-	++$recNumber; // skip number if not displayed
+//	find article type and article Access if exists
+	$docAccess='';
+	if (is_array ($onerecord['doctype']['value']))  {
+		$docType = $onerecord['doctype']['value'][0]; // Doctypes are grouped as arrays
+		$docAccess = ";".$onerecord['doctype']['value'][1];
+	}
+	else $docType = $onerecord['doctype']['value']; // Doctypes are not grouped as arrays		
+// end of print article type
+$showPublication = (!$printOnlyQ13)|| ($printOnlyQ13 && ($qGroup != " Q4" && $qGroup != " ??"));
+	if ($printArticles == TRUE && $docType != 'Article') // if user wants to show Articles only
+			$showPublication = FALSE ;	// then don't print other publications 	
+//***************************start of print loop ************************
+if ($showPublication) { // ticked Q1-Q2-Q3 OR ALL
+	++$recNumber; // skip number if not wanted to be displayed
 	echo '<span style="background-color: #DCDCDC">'; // change background text color for articles
 // https://htmlcolorcodes.com/color-names/
 	if ($printRecordNumber) { // print record number bold 
@@ -190,15 +213,16 @@ if ((!$printOnlyQ13)|| ($printOnlyQ13 && $qGroup)) {
 		}
 	if (array_key_exists(0, $onerecord['authors']) == TRUE )  	 	
 		$authorArray = $onerecord['authors'][0]; // Authors are grouped as Authors and GroupAuthors arrays
-			else $authorArray = $onerecord['authors']; // Authors are not grouped as Authors and GroupAuthors arrays
+	else $authorArray = $onerecord['authors']; // Authors are not grouped as Authors and GroupAuthors arrays
 	
-		if (count ($authorArray['value']) == 1 ) print_r ($onerecord['authors']['value']);   //one outhor only
+	if (count ($authorArray['value']) == 1 ) print_r ($onerecord['authors']['value']);   //one outhor only
 		else	{ 
 		for ($i=0; $i < count ($authorArray['value']); $i++) { print_r ($authorArray['value'][$i]); 	
 		if ($i != count ($authorArray['value'])-1) echo "; "; } // dont print ; after last author
 		}  
 	echo ". "; // a dot after last author
 	echo "<mark  style=\"color:black;\">"; // mark text for: title
+
 	print_r ($onerecord['title']['value']); echo ". ";
 	echo "</mark>"; // restore title color
 	for ($i=0; $i < count ($onerecord['source']); $i++) { // name of Source
@@ -245,6 +269,7 @@ if ((!$printOnlyQ13)|| ($printOnlyQ13 && $qGroup)) {
 	if ($printnAuthors) {echo '&nbsp;&nbsp;','Yazar sayısı = ', count ($authorArray['value']); }
 	
 	if ($printQ13Group && $qGroup) {echo '&nbsp;&nbsp;', $qGroup; } // if Q1-Q3 box is checked in the main program AND Q<4
+	if ($printDocType) print_r (" ".$docType.$docAccess);
 			
 //	echo '<br>';
  echo '</span>'; // change background color of texts
