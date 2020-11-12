@@ -45,6 +45,7 @@ $printnAuthors=FALSE;
 $printQ13Group= FALSE;
 $printOnlyQ13= FALSE;
 $printDocType= FALSE;
+$printWOSonly= FALSE;
 $qGroup='';
 // create timespanBegin, check if year is entered, month is entered, and day is entered
 $i=0;
@@ -78,6 +79,7 @@ if (isset($_POST['articletype'])) $printDocType=TRUE;
 if (isset($_POST['onlyarticles'])) $printArticles=TRUE;
 if (isset($_POST['prq13'])) $printQ13Group= TRUE; // display Q1, Q2, Q3 group
 if (isset($_POST['pronlyq13'])) $printOnlyQ13= TRUE; // only display if Q<4
+if (isset($_POST['publonslink'])) $printWOSonly=TRUE; // Displays only Publons Link in Text only and nothing else
 if (""== trim($_POST['wosQuery'])) exit("sorgu metni bulunamadı, sorgulama yapılamadı"); 
 
 $search_url = "http://search.webofknowledge.com/esti/wokmws/ws/WokSearchLite?wsdl";
@@ -132,7 +134,7 @@ for ($pageNumber=$hundredNumber; $pageNumber>0; $pageNumber--) {
 retrievePage ($retBase, $retCount);
 
 function retrievePage ($firstRec, $recCount) {
-global $queryId, $search_client, $recNumber, $sortfield, $sortorder, $printRecordNumber, $printLinks, $printnAuthors, $printQ13Group, $printOnlyQ13, $printDocType, $printArticles;
+global $queryId, $search_client, $recNumber, $sortfield, $sortorder, $printRecordNumber, $printLinks, $printnAuthors, $printQ13Group, $printOnlyQ13, $printDocType, $printArticles, $printWOSonly;
 global $issnQ1Array, $issnQ2Array,$issnQ3Array, $issnQ4Array,$issnAHArray, $eissnQ1Array, $eissnQ2Array, $eissnQ3Array, $eissnQ4Array,$eissnAHArray, $qGroup;
 $preArticle= 'http://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=PARTNER_APP&SrcAuth=LinksAMR&KeyUT=';
 $postArticle = '&DestLinkType=FullRecord&DestApp=ALL_WOS';
@@ -164,7 +166,7 @@ try{
 	exit("Bir hata oldu, sorgulama yapılamıyor"); 
 }
 $resp =(json_decode(json_encode($retrieve_response->return), true));
-// print_r ($resp) ;  // for debugging response text
+//print_r ($resp) ;  // for debugging response text
 
 for ($a = 0; $a < count($resp['records']); $a++) {
 	if (array_key_exists(0, $resp['records']) == TRUE ) 
@@ -206,11 +208,18 @@ $showPublication = (!$printOnlyQ13)|| ($printOnlyQ13 && ($qGroup != " Q4" && $qG
 //***************************start of print loop ************************
 if ($showPublication) { // ticked Q1-Q2-Q3 OR ALL
 	++$recNumber; // skip number if not wanted to be displayed
+	
+	if ($printWOSonly) { // Displays only Publons Link in Text only and nothing else
+	print_r ($prefArticle. $onerecord['uid'] .$postfArticle);
+	echo '<br>';
+	continue; // next article without printing any further
+	}
 	echo '<span style="background-color: #DCDCDC">'; // change background text color for articles
 // https://htmlcolorcodes.com/color-names/
 	if ($printRecordNumber) { // print record number bold 
 		echo "<b>"; print $recNumber; echo"- "; echo "</b>";
 		}
+				
 	if (array_key_exists(0, $onerecord['authors']) == TRUE )  	 	
 		$authorArray = $onerecord['authors'][0]; // Authors are grouped as Authors and GroupAuthors arrays
 	else $authorArray = $onerecord['authors']; // Authors are not grouped as Authors and GroupAuthors arrays
@@ -244,6 +253,11 @@ if ($showPublication) { // ticked Q1-Q2-Q3 OR ALL
 	for ($i=0; $i < count ($onerecord['source']); $i++) { 
 	if ($onerecord['source'][$i]['label'] == "Pages") { print_r ($onerecord['source'][$i]['value']); echo ". "; }
 		}
+	for ($i=0; $i < count ($onerecord['other']); $i++) { 
+	if ($onerecord['other'][$i]['label'] == "Identifier.article_no" ) { //		Article No; ARTN
+		print_r ($onerecord['other'][$i]['value']);
+			}
+		}
 	if ($printLinks)  { // print WOS, citation, doi links if user wants so
 	echo "<br>"; 
 		$articleLink= $preArticle . $onerecord['uid'] .$postArticle  ;
@@ -253,14 +267,15 @@ if ($showPublication) { // ticked Q1-Q2-Q3 OR ALL
 		echo '<a href="', $citationLink , '" target="_blank">WOS da atıflar</a>'; echo '&nbsp;&nbsp;';
 
 		$articleLink= $prefArticle. $onerecord['uid'] .$postfArticle ;
-		echo '<a href="' , $articleLink , '" target="_blank">', 'WOS (ULAKBIM dışından)</a>' ; 	echo '&nbsp;&nbsp;';
+		echo '<a href="' , $articleLink , '" target="_blank">', 'WOS (Serbest erişim)</a>' ; 	echo '&nbsp;&nbsp;';
 		
-		$citationLink=  $prefCitation. $onerecord['uid'] . $postfCitation ;
-		echo '<a href="', $citationLink , '" target="_blank">WOS da atıflar (ULAKBIM dışından)</a>'; echo '&nbsp;&nbsp;';
+		$citationLink=  $prefCitation. $onerecord['uid'] . $postfCitation ; // WOS number
+		echo '<a href="', $citationLink , '" target="_blank">WOS da atıflar (Serbest erişim)</a>'; echo '&nbsp;&nbsp;';
 		
 		for ($i=0; $i < count ($onerecord['other']); $i++) { 
 			if ($onerecord['other'][$i]['label'] == "Identifier.Doi" or 
-				$onerecord['other'][$i]['label'] == "Identifier.Xref_Doi") { 
+				$onerecord['other'][$i]['label'] == "Identifier.Xref_Doi" 				
+				) { 
 			$doiLink='https://doi.org/'.$onerecord['other'][$i]['value'];
 			echo '<a href="', $doiLink,'" target="_blank">','DOI:',$onerecord['other'][$i]['value'],'</a>' ;
 				}
