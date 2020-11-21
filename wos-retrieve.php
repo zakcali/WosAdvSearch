@@ -173,12 +173,12 @@ for ($a = 0; $a < count($resp['records']); $a++) {
 		 { $onerecord = $resp['records'][$a]; }// iterate multi record array
 	else { $onerecord = $resp['records']; $a = count($resp['records']);} // there is only one article, print only once
 	
-	
+
+			$qGroup=' ??'; // assume quartile is not known before attempting to get issn/eissn 	
 	for ($i=0; $i < count ($onerecord['other']); $i++) { // if issn or eissn number is in Q1-Q3 files, print Q status
 			if ($onerecord['other'][$i]['label'] == "Identifier.Issn") {
 			$docIssn=$onerecord['other'][$i]['value'];
-			$qGroup=' ??';
-				if (in_array($docIssn, $issnQ1Array)) { $qGroup= " Q1";}
+					 if (in_array($docIssn, $issnQ1Array)) { $qGroup= " Q1";}
 				else if (in_array($docIssn, $issnQ2Array)) { $qGroup= " Q2";}
 				else if (in_array($docIssn, $issnQ3Array)) { $qGroup= " Q3";}
 				else if (in_array($docIssn, $issnQ4Array)) { $qGroup= " Q4";}
@@ -187,7 +187,7 @@ for ($a = 0; $a < count($resp['records']); $a++) {
 				}
 			else if ($onerecord['other'][$i]['label'] == "Identifier.Eissn") {
 			$docEissn=$onerecord['other'][$i]['value'];
-				if (in_array($docEissn, $eissnQ1Array)) { $qGroup= " Q1";}
+					 if (in_array($docEissn, $eissnQ1Array)) { $qGroup= " Q1";}
 				else if (in_array($docEissn, $eissnQ2Array)) { $qGroup= " Q2";}
 				else if (in_array($docEissn, $eissnQ3Array)) { $qGroup= " Q3";}
 				else if (in_array($docEissn, $eissnQ4Array)) { $qGroup= " Q4";}
