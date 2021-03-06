@@ -45,6 +45,6 @@ a) By clicking the button, below the textarea, http://apps.webofknowledge.com/WO
 
 b) By clicking the button, above the textarea, wos-retrieve.php function is called. This php script queries on the server side by using WokSearchLite api, and creates an output containing publications, and links to publications and citations.
 
-c) By clicking the second button, below the textarea, and encrypted queryText added to that url "https://www.webofscience.com/wos/woscc/general-summary?q=" and a publication list displayed automatically in a new pad. There is no need to paste a query text for new Web of Science Beta page.
+c) By clicking the second button, below the textarea, and encrypted queryText added to that url "https://www.webofscience.com/wos/woscc/general-summary?q=" and a publication list displayed automatically in a new tab. There is no need to paste a query text for new Web of Science Beta page.
 
 
