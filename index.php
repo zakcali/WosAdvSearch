@@ -105,7 +105,7 @@ Yayın türü gözüksün<input type="checkbox" name="articletype" checked="chec
 Sadece Publons Linki-yazıyla <input type="checkbox" name="publonslink">
 <br/>
 
-	<input type="submit" value="Göster" disabled> 
+	<input type="submit" value="Göster" > 
 
 	<br />Hazır gelen metni değiştirebilirsiniz. Aşağıdaki metni ayrıca seçip kopyalamanıza gerek yoktur. <br />
 	Açılan WOS sayfasındaki "Search" üzerindeki kutuya doğrudan yapıştırabilirsiniz <br />
