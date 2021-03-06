@@ -23,6 +23,8 @@ There are Python source codes for querying wos programmatically, such as https:/
 
 Since my university supply me a server with php capabilities, I had to find php source codes, like https://gist.github.com/pol/1321660 and https://gist.github.com/domoritz/2012629
 
+New Beta page of Web of Science allows advanced search by linking url's. url contains an encrypted text and added to thta link: "https://www.webofscience.com/wos/woscc/general-summary?q="
+
 # Logic
 There are 3 horizontal tabs.
 
@@ -37,10 +39,12 @@ then a clickable menu, containing departments and associated queries is created 
 
 When user selects a department from list, associated query text is copied to a textarea, named wosQuery, id is searchText
 
-Now user has two options:
+Now user has tree options:
 
 a) By clicking the button, below the textarea, http://apps.webofknowledge.com/WOS_AdvancedSearch_input.do?&product=WOS&search_mode=AdvancedSearch page is opened in a new tab, and clipboard contains the query text. User must paste query text to search area, and click Search button in Web of Science site himself
 
 b) By clicking the button, above the textarea, wos-retrieve.php function is called. This php script queries on the server side by using WokSearchLite api, and creates an output containing publications, and links to publications and citations.
+
+c) By clicking the second button, below the textarea, and encrypted queryText added to that url "https://www.webofscience.com/wos/woscc/general-summary?q=" and a publication list displayed automatically in a new pad. There is no need to paste a query text for new Web of Science Beta page.
 
 
