@@ -101,10 +101,11 @@ Sadece makaleler gözüksün<input type="checkbox" name="onlyarticles" > <br />
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 Yayın türü gözüksün<input type="checkbox" name="articletype" checked="checked">
- <br />
-<br />
+<br/>
+Sadece Publons Linki-yazıyla <input type="checkbox" name="publonslink">
+<br/>
 
-	<input type="submit" value="Göster"> 
+	<input type="submit" value="Göster" disabled> 
 
 	<br />Hazır gelen metni değiştirebilirsiniz. Aşağıdaki metni ayrıca seçip kopyalamanıza gerek yoktur. <br />
 	Açılan WOS sayfasındaki "Search" üzerindeki kutuya doğrudan yapıştırabilirsiniz <br />
@@ -113,7 +114,8 @@ Yayın türü gözüksün<input type="checkbox" name="articletype" checked="chec
 	</form>
 
 <button onclick="openWOSw()">WOS arama sayfası</button> <a href="advancedsearch.png"> İlk gidişte (bir seferlik) sayfayı kapatınız veya AdvancedSearch menüsüne tıklayınız</a> 
- <br /> <br />
+<br/>
+<button onclick="openWOSn()">Yeni WOS arama sayfası</button> WOS sitesi yenileniyor. Yeni sitede arama metnini Query Preview yazısının altındaki kutuya yapıştırınız <br/>
     Hazır arama metinleri. Seçerseniz sayfa başındaki kutuya aktarılacak ve clipboarda kopyalanmış olacaktır. <br />  
 <select id="selectDepartment" onchange="copyQueryText(this.options[this.selectedIndex].value)">
 	<option value="">Anabilim / Bilim Dalı / Şehir Seçiniz</option>
@@ -145,7 +147,7 @@ Makalenin DOI numarasını (doi) yazınız <br />https://doi.org/<input type=tex
 </div>
 </div>
 <div id="Yazar" class="tabcontent">
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="author-list.htm" target="_blank">Yazarların ID'lerine buradan ulaşabilirsiniz (tıklayınız)</a> <br /> 
+
 <div class="row">
    <div class="column">
 Yazarın ResearcherID'ini (Publons) yazınız <br /> <input type=text name = researcherIDnumber id="ridnumber"></text> <br />
@@ -194,8 +196,8 @@ Başkent Üniversitesi Sayfaları <br />
 <button onclick="previousAcademician()"><</button> <button onclick="nextAcademician()">></button><br /> 
 </div>
 <div id="BelgeBilgi" class="tabcontent">
-<a href="https://baskentedutr-my.sharepoint.com/:b:/g/personal/tipdekanlikbilisim_baskent_edu_tr/EQl1QFwaDPpHqdW9xrR_LMIBAF0L2HtjGxo7n7CtRIxLaQ?e=bvTlZX" target="_blank">
-Web of Scienca'da Makale-Atıf-Yazar Nasıl aranır? (Tıklayarak okuyabilirsiniz)</a><br /><br />
+<a href="https://baskentedutr-my.sharepoint.com/:f:/g/personal/tipdekanlikbilisim_baskent_edu_tr/Eu4WF8N8PnxLleayE0S9zAYBJGcWWFORcpZaf8vSpzVXLw?e=ndhVEa" target="_blank">
+Web of Scienca'da Makale-Atıf-Yazar Nasıl aranır? (tıklayınız)</a><br /><br />
  BUTF kaynaklı, SCI-E, SSCI, AHCI'de kayıtlı yayınların analizleri <br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a href="https://baskentedutr-my.sharepoint.com/:f:/g/personal/tipdekanlikbilisim_baskent_edu_tr/EjsVaDV3-OxEnbiMvCzz6p4BKHEcWsL0JjjCC7giV-cqBg?e=Q1Js3e" target="_blank">
@@ -203,18 +205,23 @@ Klasörden indiriniz(tıklayınız)</a><br /> <br />
 Sadece aşağıdaki indekslerin kutusu seçilerek oluşturulmuştur <br />
 <img src="moresettings.png" alt="Seçili indeksler">
 
-<br /> Klasörden indirebileceğiniz PuppetWos programı ile sayılar oluşturulmuştur <br />
+<br /> Klasörden indirebileceğiniz aşağıda ekran görüntüsü olan PuppetWos programını bilgisayarınızda çalıştırabilirsiniz <br />
 <img src="puppet-wos.png">
 </div>
 
 
 <script>
-WOSadvancedURL = "http://apps.webofknowledge.com/WOS_AdvancedSearch_input.do?&product=WOS&search_mode=AdvancedSearch";
-var queryT = [];
+const WOSadvancedURL = "http://apps.webofknowledge.com/WOS_AdvancedSearch_input.do?&product=WOS&search_mode=AdvancedSearch";
+const WOSadvancedURLnew="https://www.webofscience.com/wos/woscc/advanced-search";
+const queryIdBase ="https://www.webofscience.com/wos/woscc/general-summary?q=";
+var queryT = []; // query text for web of science
+var queryI = []; // query Id for new web of science
 var academics = [[],[]];
 var currentAcad;
 var sidColumn=0;
 var orcidColumn=0;
+var currentDep=0;
+
 
 function openSection(evt, sectionName) {
   // Declare all variables
@@ -240,52 +247,57 @@ function openSection(evt, sectionName) {
 document.getElementById("defaultOpen").click();
 
 function displayWOSdocument() {
-	w=document.getElementById('WOSnumber').value;
+	w=document.getElementById('WOSnumber').value.replace(" ","");
 	urlText = "http://ws.isiknowledge.com/cps/openurl/service?url_ver=Z39.88-2004&rft_id=info:ut/"+w;
 	window.open(urlText,"_blank");
 	}
 function displayWOScitation() {
-	w=document.getElementById('WOSnumber').value;
+	w=document.getElementById('WOSnumber').value.replace(" ","");
 	urlText = "http://ws.isiknowledge.com/cps/openurl/service?url_ver=Z39.88-2004&rft_id=info:ut/"+w+"&svc_val_fmt=info:ofi/fmt:kev:mtx:sch_svc&svc.citing=yes";
 	window.open(urlText,"_blank");
 	}
 function displayWOSfree() {
-	w=document.getElementById('WOSnumber').value;
+	w=document.getElementById('WOSnumber').value.replace(" ","");
 	urlText = "https://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=Publons&SrcAuth=Publons_CEL&KeyUT=WOS:"+w+"&DestLinkType=FullRecord&DestApp=WOS_CPL";
 	window.open(urlText,"_blank");
 	}
 function displayWOScitfree() {
-	w=document.getElementById('WOSnumber').value;
+	w=document.getElementById('WOSnumber').value.replace(" ","");
 	urlText = "https://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=Publons&SrcAuth=Publons_CEL&KeyUT=WOS:"+w+"&DestLinkType=CitingArticles&DestApp=WOS_CPL";
 	window.open(urlText,"_blank");
 	}
 function displayEIDdocument() {
-	w=document.getElementById('eidnumber').value;
+	w=document.getElementById('eidnumber').value.replace(" ","");
 	urlText = "https://www.scopus.com/record/display.uri?eid=2-s2.0-"+w.replace(" ","")+"&origin=resultslist";
 	window.open(urlText,"_blank");
 	}
+function displayEIDcitation() {
+	w=document.getElementById('eidnumber').value.replace(" ","");
+	urlText = "https://www.scopus.com/search/submit/citedby.uri?eid=2-s2.0-"+w.replace(" ","")+"&src=s&origin=resultslist";
+	window.open(urlText,"_blank");
+	}
 function displayPIDdocument() {
-	w=document.getElementById('pmidnumber').value;
+	w=document.getElementById('pmidnumber').value.replace(" ","");
 	urlText = "https://pubmed.ncbi.nlm.nih.gov/"+w;
 	window.open(urlText,"_blank");
 	}
 function displayPIDcitation() {
-	w=document.getElementById('pmidnumber').value;
+	w=document.getElementById('pmidnumber').value.replace(" ","");
 	urlText = "https://pubmed.ncbi.nlm.nih.gov/"+w+"#citedby";
 	window.open(urlText,"_blank");
 	}
 function displayPIDold() {
-	w=document.getElementById('pmidnumber').value;
+	w=document.getElementById('pmidnumber').value.replace(" ","");
 	urlText = "https://www.ncbi.nlm.nih.gov/pubmed/"+w;
 	window.open(urlText,"_blank");
 	}
 function displayDOIdocument() {
-	w=document.getElementById('doinumber').value;
+	w=document.getElementById('doinumber').value.replace(" ","");
 	urlText = "https://doi.org/"+w;
 	window.open(urlText,"_blank");
 	}
 function displayDOIWosdocument() {
-	w=document.getElementById('doinumber').value;
+	w=document.getElementById('doinumber').value.replace(" ","");
 	urlText = "http://ws.isiknowledge.com/cps/openurl/service?url_ver=Z39.88-2004&rft_id=info:doi/"+w;
 	window.open(urlText,"_blank");
 	}
@@ -294,24 +306,19 @@ function displayTRdizindocument() {
 	urlText = "https://trdizin.gov.tr/publication/paper/detail/"+w;
 	window.open(urlText,"_blank");
 	}
-function displayEIDcitation() {
-	w=document.getElementById('eidnumber').value;
-	urlText = "https://www.scopus.com/search/submit/citedby.uri?eid=2-s2.0-"+w.replace(" ","")+"&src=s&origin=resultslist";
-	window.open(urlText,"_blank");
-	}
 function displayridResearcher() {
-	w=document.getElementById('ridnumber').value;
+	w=document.getElementById('ridnumber').value.replace(" ","");
 	urlText = "https://publons.com/researcher/"+w+"/";
 	window.open(urlText,"_blank");
 	}
 function copyrid() {
-	w=document.getElementById('ridnumber').value;
+	w=document.getElementById('ridnumber').value.replace(" ","");
 	document.getElementById('searchText').value = "AI="+w;
 // Get the element with id="defaultOpen" and click on it
 document.getElementById("defaultOpen").click();
 	}
 function copyorcid() {
-	w=document.getElementById('orcidnumber').value;
+	w=document.getElementById('orcidnumber').value.replace(" ","");
 	document.getElementById('searchText').value = "AI="+w;
 // Get the element with id="defaultOpen" and click on it
 document.getElementById("defaultOpen").click();
@@ -321,17 +328,17 @@ function displaypublonsBaskent() {
 	window.open(urlText,"_blank");
 	}
 function displaysidResearcher() {
-	w=document.getElementById('sidnumber').value;
+	w=document.getElementById('sidnumber').value.replace(" ","");
 	urlText = "http://www.scopus.com/authid/detail.uri?origin=resultslist&authorId="+w;
 	window.open(urlText,"_blank");
 	}
 function displayMendeley() {
-	w=document.getElementById('sidnumber').value;
+	w=document.getElementById('sidnumber').value.replace(" ","");
 	urlText = "https://www.mendeley.com/authors/"+w+"/";
 	window.open(urlText,"_blank");
 	}
 function displayorcidResearcher() {
-	w=document.getElementById('orcidnumber').value;
+	w=document.getElementById('orcidnumber').value.replace(" ","");
 	urlText = "https://orcid.org/"+w;
 	window.open(urlText,"_blank");
 	}
@@ -342,7 +349,7 @@ function displaypureResearcher() {
 	window.open(urlText,"_blank");
 	}
 function displayyokResearcher() {
-	w=document.getElementById('yokauthorID').value;
+	w=document.getElementById('yokauthorID').value.replace(" ","");
 	urlText = "https://akademik.yok.gov.tr/AkademikArama/AkademisyenGorevOgrenimBilgileri?islem=direct&authorId="+w;
 	window.open(urlText,"_blank");
 	}
@@ -403,8 +410,8 @@ function displayopenAccessMed() {
 	window.open(urlText,"_blank");
 }
 function copyQueryText(chosen) {
-	var i= Number (chosen);
-	document.getElementById('searchText').value=queryT[i];
+	currentDep= Number (chosen);
+	document.getElementById('searchText').value=queryT[currentDep];
 	let copyText = document.getElementById('searchText');
 	copyText.select();
 	document.execCommand("copy");
@@ -481,7 +488,14 @@ function openWOSw (){
 	document.execCommand("copy");
 	window.open(WOSadvancedURL,"_blank");
 }
-
+function openWOSn (){
+//	let copyText = document.getElementById('searchText');
+//	copyText.select();
+//	document.execCommand("copy");
+//	window.open(WOSadvancedURLnew,"_blank");
+	let newWOSurl=queryIdBase + queryI[currentDep]
+	window.open(newWOSurl,"_blank"); // direct Jump to queryId of new WOS
+}
 window.onload = function() { 
 // read query texts from server by using papaparse.min.js library instead of inline editing 
 // Başkent Üniversitesi
@@ -502,7 +516,10 @@ let results = Papa.parse(depCSV, {	//parse from csv text
 	skipEmptyLines: true
 });
 for (var i=1; i<results.data.length; i++) {
-queryT[i] = results.data[i][1]; }
+queryT[i] = results.data[i][1]; // queryText
+queryI[i] = results.data[i][2]; // queryId
+
+ }
 
 // Append to selectList
 // 	<option value="0">Başkent Üniversitesi</option>
